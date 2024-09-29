@@ -1,0 +1,4 @@
+La clase viola el Principio de Responsabilidad Única (SRP) porque combina múltiples responsabilidades en una sola clase. 
+Por un lado, maneja la persistencia de datos a través de métodos como guardarFactura() y guardarCliente(). 
+Por otro lado, también incluye lógica de negocio que no está relacionada con la persistencia, como la generación de reportes (generarReporteFacturas()) y el envío de correos electrónicos (enviarEmailFactura() y enviarFacturaDian()). 
+Esto significa que la clase FacturayCliente tiene más de una razón para cambiar, lo cual va en contra del SRP.

@@ -1,0 +1,35 @@
+2. Principio Abierto/Cerrado (OCP - Open/Closed Principle)
+Descripción:
+Las clases deben estar abiertas para la extensión, pero cerradas para la modificación. 
+Es decir, se debe poder añadir nuevas funcionalidades sin modificar el código existente.
+
+
+// INCORRECTO: Si se necesita otro tipo de forma, se debe modificar esta clase
+public class Shape {
+    public void drawShape(String shapeType) {
+        if (shapeType.equals("Circle")) {
+            // Dibuja un círculo
+        } else if (shapeType.equals("Rectangle")) {
+            // Dibuja un rectángulo
+        }
+    }
+}
+
+// CORRECTO: Usamos herencia y polimorfismo para extender las formas sin modificar la clase base
+public abstract class Shape {
+    public abstract void draw();
+}
+
+public class Circle extends Shape {
+    @Override
+    public void draw() {
+        // Dibuja un círculo
+    }
+}
+
+public class Rectangle extends Shape {
+    @Override
+    public void draw() {
+        // Dibuja un rectángulo
+    }
+}

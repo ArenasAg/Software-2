@@ -1,0 +1,3 @@
+Para agregar un nuevo tipo de envío, era necesario modificar el método calcularCosto(), añadiendo una nueva condición. 
+Esto contraviene el Principio de Abierto/Cerrado (OCP), que establece que las clases deben estar abiertas para la extensión, pero cerradas para la modificación.
+

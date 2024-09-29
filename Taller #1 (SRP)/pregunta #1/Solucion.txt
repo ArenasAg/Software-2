@@ -1,0 +1,15 @@
+La clase Usuario está haciendo demasiadas cosas a la vez, lo que va en contra del SRP. Está mezclando varias tareas que no tienen mucho que ver entre sí:
+
+*Maneja los datos del usuario
+*Se encarga de enviar correos
+*Revisa si las contraseñas son seguras
+*Hasta calcula cuánto hay que pagarle al empleado
+
+
+
+El SRP dice que una clase debería cambiar solo por una razón, pero aquí vemos que la clase Usuario podría necesitar cambios por un montón de motivos diferentes:
+
+*A lo mejor cambia cómo guardamos la info de los usuarios
+*Puede que tengamos que usar otro sistema para mandar correos
+*Las reglas de seguridad para las contraseñas podrían volverse más estrictas
+*O quizás cambie cómo se calcula el sueldo

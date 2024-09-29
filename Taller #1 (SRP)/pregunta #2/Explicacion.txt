@@ -1,0 +1,8 @@
+Para cumplir con el Principio de Responsabilidad Única (SRP), hemos dividido la clase Usuario original en varias clases más específicas:
+
+*User: Esta clase ahora se enfoca principalmente en manejar la información básica del usuario.
+*EmailService: Se encarga de toda la lógica relacionada con el envío de correos electrónicos.
+*PasswordValidator: Contiene los métodos para verificar si las contraseñas cumplen con los criterios de seguridad.
+*SalaryCalculator: Maneja los cálculos relacionados con el salario del usuario.
+
+Asi cada vez que se quiera cambiar algo seria mucho mas facil e intuitivo.

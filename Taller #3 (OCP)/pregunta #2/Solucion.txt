@@ -1,0 +1,3 @@
+Se necesitaría modificar el método calcularCosto() de la clase Envio cada vez que se añade un nuevo tipo de envío. 
+Esta parte del código necesita cambios cada vez que queremos soportar un nuevo tipo de envío.
+Ahora simplemente con la modificacion implementamos una nueva clase que sigue la interfaz Envio.

@@ -1,0 +1,4 @@
+Factura y Cliente: Clases que representan las entidades básicas del sistema.
+FacturaDAO y ClienteDAO: Clases encargadas de la persistencia de datos.
+EmailService: Clase encargada del manejo del envío de correos electrónicos.
+ReporteService: Clase encargada de la generación de reportes.
