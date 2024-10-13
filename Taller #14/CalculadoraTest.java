@@ -11,7 +11,7 @@ public class CalculadoraTest {
         calc = new Calculadora();
     }
 
-    @RepeatedTest(2)
+    @Test
     void testSumar() {
         assertEquals(6, calc.sumar(4, 2));
         assertNotEquals(5, calc.sumar(4, 2));
@@ -19,7 +19,7 @@ public class CalculadoraTest {
         assertFalse(calc.sumar(4, 2) == 5);
     }
 
-    @RepeatedTest(2)
+    @Test
     void testRestar() {
         assertEquals(2, calc.restar(4, 2));
         assertNotEquals(3, calc.restar(4, 2));
@@ -27,7 +27,7 @@ public class CalculadoraTest {
         assertFalse(calc.restar(4, 2) == 3);
     }
 
-    @RepeatedTest(2)
+    @Test
     void testMultiplicar() {
         assertEquals(8, calc.multiplicar(4, 2));
         assertNotEquals(7, calc.multiplicar(4, 2));
@@ -35,11 +35,31 @@ public class CalculadoraTest {
         assertFalse(calc.multiplicar(4, 2) == 7);
     }
 
-    @RepeatedTest(2)
+    @Test
     void testDividir() {
         assertEquals(2, calc.dividir(4, 2));
         assertNotEquals(3, calc.dividir(4, 2));
         assertTrue(calc.dividir(4, 2) == 2);
         assertFalse(calc.dividir(4, 2) == 3);
+    }
+
+    @RepeatedTest(5)
+    void testSumarRepeated() {
+        assertEquals(6, calc.sumar(4, 2));
+    }
+
+    @RepeatedTest(5)
+    void testRestarRepeated() {
+        assertEquals(2, calc.restar(4, 2));
+    }
+
+    @RepeatedTest(5)
+    void testMultiplicarRepeated() {
+        assertEquals(8, calc.multiplicar(4, 2));
+    }
+
+    @RepeatedTest(5)
+    void testDividirRepeated() {
+        assertEquals(2, calc.dividir(4, 2));
     }
 }
