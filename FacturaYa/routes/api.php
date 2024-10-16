@@ -12,13 +12,6 @@ use App\Http\Controllers\ProductoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
-//Poner nombres a todas las rutas
-//Route::get('/hola/locos' , [CabinController::class ,'index'])->name("hola.locos");
-
 Route::apiResource('categorias',CategoriaController::class);
 Route::apiResource('clientes',ClienteController::class);
 Route::apiResource('detalle_facturas',DetalleFacturaController::class);
@@ -28,4 +21,13 @@ Route::apiResource('informes',InformeController::class);
 Route::apiResource('invetarios',InventarioController::class);
 Route::apiResource('metodos_pago',MetodoPagoController::class);
 Route::apiResource('productos',ProductoController::class);
+
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+//Poner nombres a todas las rutas
+//Route::get('/hola/locos' , [CabinController::class ,'index'])->name("hola.locos");
+
+
 
