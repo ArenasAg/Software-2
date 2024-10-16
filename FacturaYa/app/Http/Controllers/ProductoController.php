@@ -9,7 +9,7 @@ class ProductoController extends Controller
 {
     public function index()
     {
-        $producto = Producto::orderBy('name', 'asc')->get();
+        $producto = Producto::all();
          return response()->json(['data' => $producto], 200);
         // return "Hola mundo";
     }

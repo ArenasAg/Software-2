@@ -9,7 +9,7 @@ class InventarioController extends Controller
 {
     public function index()
     {
-        $inventario = Inventario::orderBy('name', 'asc')->get();
+        $inventario = Inventario::all();
          return response()->json(['data' => $inventario], 200);
         // return "Hola mundo";
     }

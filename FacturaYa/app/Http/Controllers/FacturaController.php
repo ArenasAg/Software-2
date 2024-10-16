@@ -9,7 +9,7 @@ class FacturaController extends Controller
 {
     public function index()
     {
-        $factura = Factura::orderBy('name', 'asc')->get();
+        $factura = Factura::all();
          return response()->json(['data' => $factura], 200);
         // return "Hola mundo";
     }

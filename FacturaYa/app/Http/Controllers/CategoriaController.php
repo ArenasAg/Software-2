@@ -9,7 +9,7 @@ class CategoriaController extends Controller
 {
     public function index()
     {
-        $categoria = Categoria::orderBy('name', 'asc')->get();
+        $categoria = Categoria::all();
          return response()->json(['data' => $categoria], 200);
         // return "Hola mundo";
     }

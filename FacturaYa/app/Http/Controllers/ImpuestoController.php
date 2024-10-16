@@ -9,7 +9,7 @@ class ImpuestoController extends Controller
 {
     public function index()
     {
-        $impuesto = Impuesto::orderBy('name', 'asc')->get();
+        $impuesto = Impuesto::all();
          return response()->json(['data' => $impuesto], 200);
         // return "Hola mundo";
     }

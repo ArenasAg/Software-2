@@ -9,7 +9,7 @@ class DetalleFacturaController extends Controller
 {
     public function index()
     {
-        $detalleFactura = DetalleFactura::orderBy('name', 'asc')->get();
+        $detalleFactura = DetalleFactura::all();
          return response()->json(['data' => $detalleFactura], 200);
         // return "Hola mundo";
     }

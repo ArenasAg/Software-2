@@ -9,7 +9,7 @@ class InformeController extends Controller
 {
     public function index()
     {
-        $informe = Informe::orderBy('name', 'asc')->get();
+        $informe = Informe::all();
          return response()->json(['data' => $informe], 200);
         // return "Hola mundo";
     }

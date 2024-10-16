@@ -9,7 +9,7 @@ class ClienteController extends Controller
 {
     public function index()
     {
-        $cliente = Cliente::orderBy('name', 'asc')->get();
+        $cliente = Cliente::all();
          return response()->json(['data' => $cliente], 200);
         // return "Hola mundo";
     }
