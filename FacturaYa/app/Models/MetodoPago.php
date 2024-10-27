@@ -9,8 +9,12 @@ class MetodoPago extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'metodo_pagos';
+
     protected $fillable = [
-        'descipcion',
+        'nombre',
         'identificador'
     ];
 }

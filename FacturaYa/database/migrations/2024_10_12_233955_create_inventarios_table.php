@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('inventarios', function (Blueprint $table) {
             $table->id();
             $table->date('fecha')->nullable(false);
-            $table->string('tipo_movimiento', 1)->nullable(false);
-            $table->integer('entrada')->nullable(false);
-            $table->integer('salida')->nullable(false);
+            $table->string('tipo_movimiento')->nullable(false);
+            $table->integer('entrada')->nullable(true);
+            $table->integer('salida')->nullable(true);
             $table->foreignId('producto_id')->constrained();
 
             $table->foreign('producto_id', 'fk_inventarios_producto_id')

@@ -9,6 +9,10 @@ class Inventario extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'inventarios';
+
     protected $fillable = [
         'fecha',
         'tipo_movimiento',

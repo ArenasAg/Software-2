@@ -1,51 +1,59 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Informe;
 
+use App\Models\Informe;
 use Illuminate\Http\Request;
 
 class InformeController extends Controller
 {
     public function index()
     {
-        $informe = Informe::all();
-         return response()->json(['data' => $informe], 200);
-        // return "Hola mundo";
+        $informes = Informe::all();
+        return view('informes.index', compact('informes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        return view('informes.create');
+    }
+
     public function store(Request $request)
     {
-        $informe = Informe::create($request->all());
-        return response()->json(['data' => $informe], 201);
+        $request->validate([
+            'fecha' => 'required|date',
+            'tipo_informe' => 'required|string',
+            'datos_json' => 'required|json'
+        ]);
+
+        Informe::create($request->all());
+
+        return redirect()->route('informes.index')->with('success', 'Informe creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Informe $informe)
+    public function edit($id)
     {
-        return response()->json(['data' => $informe], 200);
+        $informe = Informe::findOrFail($id);
+        return view('informes.edit', compact('informe'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Informe $informe)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'fecha' => 'required|date',
+            'tipo_informe' => 'required|string',
+            'datos_json' => 'required|json'
+        ]);
+
+        $informe = Informe::findOrFail($id);
         $informe->update($request->all());
-         return response()->json(['data' => $informe], 200);
+
+        return redirect()->route('informes.index')->with('success', 'Informe actualizado con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Informe $informe)
+    public function destroy($id)
     {
-        $informe->delete();
-         return response(null, 204);
+        Informe::destroy($id);
+        return redirect()->route('informes.index')->with('success', 'Informe eliminado con éxito.');
     }
 }

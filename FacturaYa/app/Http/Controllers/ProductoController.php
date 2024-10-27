@@ -1,51 +1,104 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Producto;
 
+use App\Models\Producto;
+use App\Models\Categoria;
+use App\Models\Impuesto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
     public function index()
     {
-        $producto = Producto::all();
-         return response()->json(['data' => $producto], 200);
-        // return "Hola mundo";
+        $productos = Producto::all();
+        return view('productos.index', compact('productos'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        $productos = Producto::all();
+        $categorias = Categoria::all();
+        $impuestos = Impuesto::all();
+        return view('productos.create', compact('productos', 'categorias', 'impuestos'));
+    }
+
     public function store(Request $request)
     {
-        $producto = Producto::create($request->all());
-        return response()->json(['data' => $producto], 201);
+        $request->validate([
+            'codigo' => 'required|unique:productos',
+            'nombre' => 'required',
+            'imagen' => 'nullable|image',
+            'precio' => 'required|numeric',
+            'medida' => 'required',
+            'categoria_id' => 'required|exists:categorias,id',
+            'impuesto_id' => 'required|exists:impuestos,id'
+        ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('imagen')) {
+            $filename = time() . '.' . $request->file('imagen')->getClientOriginalExtension();
+            $data['imagen'] = $request->file('imagen')->storeAs('img', $filename, 'public');
+        }
+
+        Producto::create($data);
+
+        return redirect()->route('productos.index')->with('success', 'Producto creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Producto $producto)
+    public function edit($id)
     {
-        return response()->json(['data' => $producto], 200);
+        $producto = Producto::findOrFail($id);
+        $categorias = Categoria::all();
+        $impuestos = Impuesto::all();
+        return view('productos.edit', compact('producto', 'categorias', 'impuestos'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Producto $producto)
+    public function update(Request $request, $id)
     {
-        $producto->update($request->all());
-         return response()->json(['data' => $producto], 200);
+        $request->validate([
+            'codigo' => 'required|unique:productos,codigo,' . $id,
+            'nombre' => 'required',
+            'imagen' => 'nullable|image',
+            'precio' => 'required|numeric',
+            'medida' => 'required',
+            'categoria_id' => 'required|exists:categorias,id',
+            'impuesto_id' => 'required|exists:impuestos,id'
+        ]);
+
+        $producto = Producto::findOrFail($id);
+
+        $data = $request->all();
+
+        if ($request->hasFile('imagen')) {
+            // Eliminar la imagen anterior del sistema de archivos
+            if ($producto->imagen) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+
+            // Guardar la nueva imagen
+            $filename = time() . '.' . $request->file('imagen')->getClientOriginalExtension();
+            $data['imagen'] = $request->file('imagen')->storeAs('img', $filename, 'public');
+        }
+
+        $producto->update($data);
+
+        return redirect()->route('productos.index')->with('success', 'Producto actualizado con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Producto $producto)
+    public function destroy($id)
     {
+        $producto = Producto::findOrFail($id);
+
+        // Eliminar la imagen del sistema de archivos
+        if ($producto->imagen) {
+            Storage::disk('public')->delete($producto->imagen);
+        }
+
         $producto->delete();
-         return response(null, 204);
+
+        return redirect()->route('productos.index')->with('success', 'Producto eliminado con éxito.');
     }
 }

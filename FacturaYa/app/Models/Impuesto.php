@@ -9,6 +9,10 @@ class Impuesto extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'impuestos';
+
     protected $fillable = [
         'nombre',
         'porcentaje'

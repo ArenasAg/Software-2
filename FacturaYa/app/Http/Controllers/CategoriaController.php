@@ -1,51 +1,57 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Categoria;
 
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
     public function index()
     {
-        $categoria = Categoria::all();
-         return response()->json(['data' => $categoria], 200);
-        // return "Hola mundo";
+        $categorias = Categoria::all();
+        return view('categorias.index', compact('categorias'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        return view('categorias.create');
+    }
+
     public function store(Request $request)
     {
-        $categoria = Categoria::create($request->all());
-        return response()->json(['data' => $categoria], 201);
+        $request->validate([
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:255'
+        ]);
+
+        Categoria::create($request->all());
+
+        return redirect()->route('categorias.index')->with('success', 'Categoria creada con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Categoria $categoria)
+    public function edit($id)
     {
-        return response()->json(['data' => $categoria], 200);
+        $categoria = Categoria::findOrFail($id);
+        return view('categorias.edit', compact('categoria'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:255'
+        ]);
+
+        $categoria = Categoria::findOrFail($id);
         $categoria->update($request->all());
-         return response()->json(['data' => $categoria], 200);
+
+        return redirect()->route('categorias.index')->with('success', 'Categoria actualizada con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Categoria $categoria)
+    public function destroy($id)
     {
-        $categoria->delete();
-         return response(null, 204);
+        Categoria::destroy($id);
+        return redirect()->route('categorias.index')->with('success', 'Categoria eliminada con éxito.');
     }
 }

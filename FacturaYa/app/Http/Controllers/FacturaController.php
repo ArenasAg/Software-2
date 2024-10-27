@@ -1,51 +1,73 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Factura;
 
+use App\Models\Factura;
+use App\Models\Cliente;
+use App\Models\MetodoPago;
 use Illuminate\Http\Request;
 
 class FacturaController extends Controller
 {
     public function index()
     {
-        $factura = Factura::all();
-         return response()->json(['data' => $factura], 200);
-        // return "Hola mundo";
+        $facturas = Factura::all();
+        return view('facturas.index', compact('facturas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        $clientes = Cliente::all();
+        $metodoPagos = MetodoPago::all();
+        return view('facturas.create', compact('clientes', 'metodoPagos'));
+    }
+
     public function store(Request $request)
     {
-        $factura = Factura::create($request->all());
-        return response()->json(['data' => $factura], 201);
+        $request->validate([
+            'codigo' => 'required',
+            'fecha' => 'required|date',
+            'subtotal' => 'required|numeric',
+            'total_impuestos' => 'required|numeric',
+            'total' => 'required|numeric',
+            'estado' => 'required',
+            'cliente_id' => 'required|exists:clientes,id',
+            'metodo_pago_id' => 'required|exists:metodo_pagos,id'
+        ]);
+
+        Factura::create($request->all());
+
+        return redirect()->route('facturas.index')->with('success', 'Factura creada con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Factura $factura)
+    public function edit($id)
     {
-        return response()->json(['data' => $factura], 200);
+        $factura = Factura::findOrFail($id);
+        return view('facturas.edit', compact('factura'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Factura $factura)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'codigo' => 'required',
+            'fecha' => 'required|date',
+            'subtotal' => 'required|numeric',
+            'total_impuestos' => 'required|numeric',
+            'total' => 'required|numeric',
+            'estado' => 'required',
+            'cliente_id' => 'required|exists:clientes,id',
+            'metodo_pago_id' => 'required|exists:metodo_pagos,id'
+        ]);
+
+        $factura = Factura::findOrFail($id);
         $factura->update($request->all());
-         return response()->json(['data' => $factura], 200);
+
+        return redirect()->route('facturas.index')->with('success', 'Factura actualizada con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Factura $factura)
+    public function destroy($id)
     {
-        $factura->delete();
-         return response(null, 204);
+        Factura::destroy($id);
+        return redirect()->route('facturas.index')->with('success', 'Factura eliminada con éxito.');
     }
 }

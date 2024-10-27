@@ -1,51 +1,57 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\MetodoPago;
 
+use App\Models\MetodoPago;
 use Illuminate\Http\Request;
 
 class MetodoPagoController extends Controller
 {
     public function index()
     {
-        $metodoPago = MetodoPago::all();
-         return response()->json(['data' => $metodoPago], 200);
-        // return "Hola mundo";
+        $metodoPagos = MetodoPago::all();
+        return view('metodoPagos.index', compact('metodoPagos'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        return view('metodoPagos.create');
+    }
+
     public function store(Request $request)
     {
-        $metodoPago = MetodoPago::create($request->all());
-        return response()->json(['data' => $metodoPago], 201);
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'identificador' => 'required|unique:metodo_pagos,identificador'
+        ]);
+
+        MetodoPago::create($request->all());
+
+        return redirect()->route('metodoPagos.index')->with('success', 'Metodo de Pago creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MetodoPago $metodoPago)
+    public function edit($id)
     {
-        return response()->json(['data' => $metodoPago], 200);
+        $metodoPago = MetodoPago::findOrFail($id);
+        return view('metodoPagos.edit', compact('metodoPago'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, MetodoPago $metodoPago)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'identificador' => 'required|unique:metodo_pagos,identificador' . $id
+        ]);
+
+        $metodoPago = MetodoPago::findOrFail($id);
         $metodoPago->update($request->all());
-         return response()->json(['data' => $metodoPago], 200);
+
+        return redirect()->route('metodoPagos.index')->with('success', 'Metodo de Pago actualizado con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(MetodoPago $metodoPago)
+    public function destroy($id)
     {
-        $metodoPago->delete();
-         return response(null, 204);
+        MetodoPago::destroy($id);
+        return redirect()->route('metodoPagos.index')->with('success', 'Metodo de Pago eliminado con éxito.');
     }
 }

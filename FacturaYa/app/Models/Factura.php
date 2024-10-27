@@ -9,6 +9,10 @@ class Factura extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'facturas';
+
     protected $fillable = [
         'codigo',
         'fecha',

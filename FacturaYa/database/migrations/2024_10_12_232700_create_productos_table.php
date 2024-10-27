@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->unique();
-            $table->string('descripcion')->nullable(false);
-            $table->decimal('precio_venta', 10, 2)->nullable(false);
+            $table->string('nombre')->nullable(false);
+            $table->string('imagen')->nullable(true);
+            $table->decimal('precio', 10, 2)->nullable(false);
             $table->decimal('medida', 5, 2)->nullable(false);
             $table->foreignId('categoria_id')->constrained();
             $table->foreignId('impuesto_id')->constrained();

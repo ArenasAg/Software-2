@@ -9,6 +9,10 @@ class Informe extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'informes';
+
     protected $fillable = [
         'fecha',
         'tipo_informe',

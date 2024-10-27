@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2)->nullable(false);
             $table->decimal('total_impuestos', 10, 2)->nullable(false);
             $table->decimal('total', 10, 2)->nullable(false);
-            $table->string('estado')->nullable(false);
+            $table->boolean('estado')->nullable(false);
             $table->foreignId('cliente_id')->constrained();
             $table->foreignId('metodo_pago_id')->constrained();
 

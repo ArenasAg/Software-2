@@ -9,6 +9,10 @@ class Cliente extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'clientes';
+
     protected $fillable = [
         'numero_documento',
         'nombre',

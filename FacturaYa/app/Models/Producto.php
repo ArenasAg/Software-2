@@ -9,10 +9,15 @@ class Producto extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $table = 'productos';
+
     protected $fillable = [
         'codigo',
-        'descripcion',
-        'precio_venta',
+        'nombre',
+        'imagen',
+        'precio',
         'medida',
         'categoria_id',
         'impuesto_id'

@@ -1,51 +1,57 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Impuesto;
 
+use App\Models\Impuesto;
 use Illuminate\Http\Request;
 
 class ImpuestoController extends Controller
 {
     public function index()
     {
-        $impuesto = Impuesto::all();
-         return response()->json(['data' => $impuesto], 200);
-        // return "Hola mundo";
+        $impuestos = Impuesto::all();
+        return view('impuestos.index', compact('impuestos'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        return view('impuestos.create');
+    }
+
     public function store(Request $request)
     {
-        $impuesto = Impuesto::create($request->all());
-        return response()->json(['data' => $impuesto], 201);
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'porcentaje' => 'required|numeric|min:0|max:100'
+        ]);
+
+        Impuesto::create($request->all());
+
+        return redirect()->route('impuestos.index')->with('success', 'Impuesto creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Impuesto $impuesto)
+    public function edit($id)
     {
-        return response()->json(['data' => $impuesto], 200);
+        $impuesto = Impuesto::findOrFail($id);
+        return view('impuestos.edit', compact('impuesto'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Impuesto $impuesto)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'porcentaje' => 'required|numeric|min:0|max:100'
+        ]);
+
+        $impuesto = Impuesto::findOrFail($id);
         $impuesto->update($request->all());
-         return response()->json(['data' => $impuesto], 200);
+
+        return redirect()->route('impuestos.index')->with('success', 'Impuesto actualizado con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Impuesto $impuesto)
+    public function destroy($id)
     {
-        $impuesto->delete();
-         return response(null, 204);
+        Impuesto::destroy($id);
+        return redirect()->route('impuestos.index')->with('success', 'Impuesto eliminado con éxito.');
     }
 }

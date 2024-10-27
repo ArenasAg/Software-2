@@ -1,51 +1,65 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Cliente;
 
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
     public function index()
     {
-        $cliente = Cliente::all();
-         return response()->json(['data' => $cliente], 200);
-        // return "Hola mundo";
+        $clientes = Cliente::all();
+        return view('clientes.index', compact('clientes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        return view('clientes.create');
+    }
+
     public function store(Request $request)
     {
-        $cliente = Cliente::create($request->all());
-        return response()->json(['data' => $cliente], 201);
+        $request->validate([
+            'numero_documento' => 'required|string|max:20|unique:clientes,numero_documento',
+            'nombre' => 'required|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'required|email|unique:clientes,email',
+            'ciudad' => 'nullable|string|max:100',
+        ]);
+
+        Cliente::create($request->all());
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cliente $cliente)
+    public function edit($id)
     {
-        return response()->json(['data' => $cliente], 200);
+        $cliente = Cliente::findOrFail($id);
+        return view('clientes.edit', compact('cliente'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Cliente $cliente)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'numero_documento' => 'required|string|max:20|unique:clientes,numero_documento',
+            'nombre' => 'required|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'required|email',
+            'ciudad' => 'nullable|string|max:100',
+        ]);
+
+        $cliente = Cliente::findOrFail($id);
         $cliente->update($request->all());
-         return response()->json(['data' => $cliente], 200);
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cliente $cliente)
+    public function destroy($id)
     {
-        $cliente->delete();
-         return response(null, 204);
+        Cliente::destroy($id);
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado con éxito.');
     }
 }
