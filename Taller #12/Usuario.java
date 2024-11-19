@@ -1,10 +1,10 @@
 public class Usuario {
     private String nombre;
-    private String identificacion;
+    private String documento;
 
-    public Usuario(String nombre, String identificacion) {
+    public Usuario(String nombre, String documento) {
         this.nombre = nombre;
-        this.identificacion = identificacion;
+        this.documento = documento;
     }
 
     public String getNombre() {
@@ -15,11 +15,11 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getIdentificacion() {
-        return identificacion;
+    public String getdocumento() {
+        return documento;
     }
 
-    public void setIdentificacion(String identificacion) {
-        this.identificacion = identificacion;
+    public void setdocumento(String documento) {
+        this.documento = documento;
     }
 }

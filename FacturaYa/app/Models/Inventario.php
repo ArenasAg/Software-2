@@ -9,15 +9,13 @@ class Inventario extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
-    protected $table = 'inventarios';
-
     protected $fillable = [
         'fecha',
         'tipo_movimiento',
-        'entrada',
-        'salida',
-        'producto_id'
     ];
+
+    public function detalles()
+    {
+        return $this->hasMany(InventarioDetalle::class);
+    }
 }

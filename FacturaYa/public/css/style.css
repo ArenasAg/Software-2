@@ -1,8 +1,8 @@
 /* Diseño 1 - Moderno y Minimalista */
 .theme-modern {
-    --primary-color: #6C63FF;
+    --primary-color: #575492;
     --secondary-color: #F5F5F5;
-    --text-color: #2D3436;
+    --text-color: white;
     --sidebar-width: 280px;
     --transition-speed: 0.3s;
 }
@@ -15,26 +15,165 @@ body {
     transition: all var(--transition-speed);
 }
 
+body .btnAdd{
+    background-color: #8d8bcc;
+    color: var(--secondary-color)
+}
+
+body .btnAdd:hover{
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.bodyAuth {
+    font-family: 'Inter', sans-serif !important;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #ffffff 100%) !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+
+.login-container{
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header img {
+    width: 80px;
+    margin-bottom: 1rem;
+}
+
+.form-floating {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 1rem;
+    border: 2px solid var(--secondary-color);
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+}
+
+.btn-login {
+    background: #8d8bcc;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 10px;
+    width: 100%;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-login:hover {
+    background: var(--primary-color);
+    color: var(--text-color);
+    transform: translateY(-2px);
+}
+
+.form-check {
+    margin: 1rem 0;
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.forgot-password:hover {
+    color: #5851db;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.register-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.notification-bell{
+    color: #8d8bcc !important;
+}
+
+
+.dropdown-menu {
+    --bs-dropdown-bg: #8d8bcc;
+    --bs-dropdown-color: var(--text-color);
+}
+
 /* Sidebar Moderno */
 .sidebar-modern {
+    color: var(--text-color);
     position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
     width: var(--sidebar-width);
-    background-image: linear-gradient(to bottom, var(--secondary-color) 0%, var(--secondary-color) 100%),
-                      linear-gradient(45deg, rgba(108, 99, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(108, 99, 255, 0.05) 75%);
+    background-color: var(--primary-color);
     background-size: 100% 100%, 20px 20px;
     border-right: 1px solid rgba(0,0,0,0.1);
     transform: translateX(-100%);
     transition: transform var(--transition-speed);
     z-index: 1000;
     padding: 2rem;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+#sidebarCollapse {
+    color: #6d68ff !important;
+}
+
+.sidebar-modern i{
+    color:#6d68ff !important;
 }
 
 .sidebar-modern.active {
     transform: translateX(0);
 }
+
 
 /* Menú Items Modernos */
 .menu-modern {
@@ -42,7 +181,8 @@ body {
     padding: 0;
     margin: 2rem 0;
     overflow-y: auto;
-    max-height: 60vh;
+    overflow-x: hidden;
+    max-height: 80%;
 }
 
 .menu-modern::-webkit-scrollbar {
@@ -64,8 +204,8 @@ body {
 }
 
 .menu-modern a:hover {
-    background: var(--primary-color);
-    color: white;
+    background: var(--secondary-color);
+    color: var(--primary-color);
     transform: translateX(10px);
 }
 
@@ -73,6 +213,11 @@ body {
     margin-right: 1rem;
     font-size: 1.2rem;
 
+}
+
+.menu-modern .submenu {
+    font-size: 13px;
+    padding-left: 40px;
 }
 
 /* Cards Modernas */
@@ -84,11 +229,6 @@ body {
     transition: all var(--transition-speed);
     border-left: 4px solid var(--primary-color);
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.card-modern:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
 /* Stats Cards */
@@ -109,9 +249,6 @@ body {
     100% { background-position: 0% 50% }
 }
 
-.stats-card:hover {
-    transform: scale(1.02);
-}
 
 /* Search Bar */
 .search-modern {
@@ -126,7 +263,7 @@ body {
 
 .search-modern:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--primary-color);
+    box-shadow: 0 2px 2px 2px var(--primary-color);
 }
 
 /* Botón Toggle Tema */
@@ -149,14 +286,11 @@ body {
     transition: all var(--transition-speed);
 }
 
-#sidebarCollapse:hover {
-    transform: scale(1.1);
-}
 
 /* Content Area */
 .content-area {
     margin-left: 0;
-    padding: 2rem;
+    padding: 4rem;
     transition: margin-left var(--transition-speed);
 }
 
@@ -246,12 +380,189 @@ body {
     }
 }
 
-.table tbody tr {
-    transition: all 0.3s;
+.table {
+    background-color: transparent;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: auto;
+    --bs-table-color: #333; /* Color del texto */
+    --bs-table-bg: transparent; /* Color de fondo */
+    --bs-table-border-color: white; /* Color del borde */
+    --bs-table-accent-bg: #f8f9fa; /* Color de fondo de acento */
+    --bs-table-striped-color: #333; /* Color del texto en filas con rayas */
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.05); /* Color de fondo en filas con rayas */
+    --bs-table-active-color: #333; /* Color del texto en filas activas */
+    --bs-table-active-bg: rgba(0, 0, 0, 0.1); /* Color de fondo en filas activas */
+    --bs-table-hover-color: #333; /* Color del texto en filas al pasar el ratón */
+    --bs-table-hover-bg: rgba(0, 0, 0, 0.075); /* Color de fondo en filas al pasar el ratón */
 }
 
-.table tbody tr:hover {
-    background: rgba(108, 99, 255, 0.1);
-    transform: scale(1.01);
+.table img {
+    transition: transform 0.2s;
+    position: relative;
 }
 
+.table img:hover {
+    transform: scale(1.6);
+}
+
+.table::-webkit-scrollbar {
+    width: 0px;
+}
+
+.table > :not(caption) > * > * {
+    padding: .75rem 1rem; /* Cambiar el relleno */
+    color: var(--bs-table-color); /* Usar la variable de color del texto */
+    background-color: var(--bs-table-bg); /* Usar la variable de color de fondo */
+    border-bottom-width: 1px; /* Cambiar el ancho del borde inferior */
+    box-shadow: inset 0 0 0 9999px var(--bs-table-bg); /* Usar la variable de color de fondo */
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border-color: var(--bs-table-border-color); /* Usar la variable de color del borde */
+    border-style: solid;
+    border-width: 1px; /* Cambiar el ancho del borde */
+    border-bottom-width: 1px; /* Cambiar el ancho del borde inferior */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+}
+
+.page-item {
+    margin: 0 0.25rem;
+}
+
+.page-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: var(--primary-color);
+    border-color: #dee2e6;
+}
+
+.book {
+    width: 400px;
+    height: 500px;
+    perspective: 1000px;
+    position: relative;
+}
+
+.book-inner {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    animation: openBook 3s forwards; /* Efecto de apertura de todo el libro */
+    box-shadow: 0 0 300px rgba(0, 0, 0, 1);
+}
+
+/* Carátula */
+.book-cover.front {
+    width: 100%;
+    height: 100%;
+    background: #4c4b80;
+    position: absolute;
+    backface-visibility: hidden;
+    transform-origin: left;
+    transform: rotateY(0deg);
+    border: 2px solid #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: openCover 1.5s forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+/* Estilo del título en la carátula */
+.cover-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Estilo de todas las páginas */
+.book-page {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transform-origin: left;
+    transform: rotateY(0deg); /* Posición inicial */
+    animation: turnPage 1.5s forwards;
+}
+
+/* Fondo con líneas en las páginas interiores */
+.book-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        to bottom,
+        #dcdcdc,
+        #dcdcdc 1px,
+        transparent 1px,
+        transparent 20px
+    );
+    opacity: 0.5; /* Transparencia para suavizar el efecto */
+}
+
+/* Animaciones de giro con delays progresivos */
+.book-page:nth-child(2) { animation-delay: 1.5s; } /* Primera página */
+.book-page:nth-child(3) { animation-delay: 1.8s; }
+.book-page:nth-child(4) { animation-delay: 2.1s; }
+.book-page:nth-child(5) { animation-delay: 2.4s; }
+.book-page:nth-child(6) { animation-delay: 2.7s; }
+.book-page:nth-child(7) { animation-delay: 3s; }
+.book-page:nth-child(8) { animation-delay: 3.3s; }
+.book-page:nth-child(9) { animation-delay: 3.6s; }
+.book-page:nth-child(10) { animation-delay: 3.9s; }
+.book-page:nth-child(11) { animation-delay: 4.2s; }
+
+/* Animación de giro de cada página */
+@keyframes turnPage {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(-40deg);
+    }
+}
+
+/* Animación de la portada */
+@keyframes openCover {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(-40deg); z-index: 1000;}
+}
+
+/* Efecto 3D para la apertura del libro */
+@keyframes openBook {
+    0%, 100% { transform: rotateY(0deg); }
+    50% { transform: rotateY(-5deg); }
+}

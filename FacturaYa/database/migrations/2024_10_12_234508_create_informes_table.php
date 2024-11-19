@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('fecha')->nullable(false);
             $table->string('tipo_informe', 1)->nullable(false);
             $table->json('datos_json')->nullable(false);
+            $table->timestamps();
         });
     }
 

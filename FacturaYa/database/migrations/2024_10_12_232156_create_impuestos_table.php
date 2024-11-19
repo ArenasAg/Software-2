@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->nullable(false);
             $table->decimal('porcentaje', 5, 2)->nullable(false);
+            $table->timestamps();
         });
     }
 

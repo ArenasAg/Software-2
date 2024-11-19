@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('detalle_facturas', function (Blueprint $table) {
             $table->id();
             $table->integer('cantidad');
+            $table->decimal('precio_unitario', 8, 2);
             $table->decimal('valor_total', 8, 2);
             $table->decimal('descuento', 5, 2);
-            $table->foreignId('producto_id')->constrained();
+            $table->foreignId('libro_id')->constrained();
             $table->foreignId('factura_id')->constrained();
+            $table->timestamps();
 
-            $table->foreign('producto_id', 'fk_detalle_facturas_producto_id')
-                ->references('id')->on('productos')
+            $table->foreign('libro_id', 'fk_detalle_facturas_libro_id')
+                ->references('id')->on('libros')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
 

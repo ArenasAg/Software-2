@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Impuesto;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\ImpuestoExport;
 
 class ImpuestoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $impuestos = Impuesto::all();
+        $impuestos = Impuesto::paginate(5);
+        if ($request->ajax()) {
+            return response()->json($impuestos);
+        }
         return view('impuestos.index', compact('impuestos'));
     }
 
@@ -27,7 +32,7 @@ class ImpuestoController extends Controller
 
         Impuesto::create($request->all());
 
-        return redirect()->route('impuestos.index')->with('success', 'Impuesto creado con éxito.');
+        return response()->json(['success' => true]);
     }
 
     public function edit($id)
@@ -53,5 +58,19 @@ class ImpuestoController extends Controller
     {
         Impuesto::destroy($id);
         return redirect()->route('impuestos.index')->with('success', 'Impuesto eliminado con éxito.');
+    }
+
+    public function export($format)
+    {
+        $impuestos = Impuesto::all();
+        if ($format === 'excel') {
+            $export = new ImpuestoExport();
+            return $export->export();
+        } elseif ($format === 'pdf') {
+            $pdf = PDF::loadView('exports.impuestos_pdf', compact('impuestos'));
+            return $pdf->download('impuestos.pdf');
+        }
+
+        return redirect()->back()->with('error', 'Formato no soportado');
     }
 }

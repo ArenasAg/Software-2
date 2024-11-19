@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('facturas', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->nullable(false);
-            $table->date('fecha')->nullable(false);
             $table->decimal('subtotal', 10, 2)->nullable(false);
             $table->decimal('total_impuestos', 10, 2)->nullable(false);
             $table->decimal('total', 10, 2)->nullable(false);
             $table->boolean('estado')->nullable(false);
             $table->foreignId('cliente_id')->constrained();
             $table->foreignId('metodo_pago_id')->constrained();
+            $table->timestamps();
 
             $table->foreign('cliente_id', 'fk_facturas_cliente_id')
                 ->references('id')->on('clientes')

@@ -9,7 +9,7 @@ class Cliente extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'clientes';
 
@@ -19,6 +19,7 @@ class Cliente extends Model
         'direccion',
         'telefono',
         'email',
-        'ciudad'
+        'ciudad',
+        'estado'
     ];
 }

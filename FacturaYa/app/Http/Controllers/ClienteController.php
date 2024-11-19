@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\ClienteExport;
 
 class ClienteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clientes = Cliente::all();
+        $clientes = Cliente::paginate(5);
+        if ($request->ajax()) {
+            return response()->json($clientes);
+        }
         return view('clientes.index', compact('clientes'));
     }
 
@@ -31,7 +36,7 @@ class ClienteController extends Controller
 
         Cliente::create($request->all());
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente creado con éxito.');
+        return response()->json(['success' => true]);
     }
 
     public function edit($id)
@@ -61,5 +66,19 @@ class ClienteController extends Controller
     {
         Cliente::destroy($id);
         return redirect()->route('clientes.index')->with('success', 'Cliente eliminado con éxito.');
+    }
+
+    public function export($format)
+    {
+        $clientes = Cliente::all();
+        if ($format === 'excel') {
+            $export = new ClienteExport();
+            return $export->export();
+        } elseif ($format === 'pdf') {
+            $pdf = PDF::loadView('exports.clientes_pdf', compact('clientes'));
+            return $pdf->download('clientes.pdf');
+        }
+
+        return redirect()->back()->with('error', 'Formato no soportado');
     }
 }

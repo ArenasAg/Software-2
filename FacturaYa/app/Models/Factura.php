@@ -9,7 +9,7 @@ class Factura extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'facturas';
 
@@ -23,4 +23,19 @@ class Factura extends Model
         'cliente_id',
         'metodo_pago_id'
     ];
+
+    public function detalles()
+    {
+        return $this->hasMany(DetalleFactura::class);
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
+
+    public function metodoPago()
+    {
+        return $this->belongsTo(MetodoPago::class);
+    }
 }

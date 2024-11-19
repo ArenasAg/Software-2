@@ -15,14 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('fecha')->nullable(false);
             $table->string('tipo_movimiento')->nullable(false);
-            $table->integer('entrada')->nullable(true);
-            $table->integer('salida')->nullable(true);
-            $table->foreignId('producto_id')->constrained();
-
-            $table->foreign('producto_id', 'fk_inventarios_producto_id')
-                ->references('id')->on('productos')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
+            $table->timestamps();
         });
     }
 

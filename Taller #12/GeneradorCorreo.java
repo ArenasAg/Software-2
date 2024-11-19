@@ -7,7 +7,7 @@ public class GeneradorCorreo {
 
     public void generarCorreo(Usuario usuario) {
         String asunto = "Correo para " + usuario.getNombre();
-        String cuerpo = "Nombre: " + usuario.getNombre() + "\nIdentificación: " + usuario.getIdentificacion();
+        String cuerpo = "Nombre: " + usuario.getNombre() + "\nIdentificación: " + usuario.getdocumento();
         Notificacion notificacion = new Notificacion(asunto, cuerpo);
         canalNotificacion.enviarCorreo(notificacion);
     }

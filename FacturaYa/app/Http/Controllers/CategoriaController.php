@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use App\Exports\CategoriaExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CategoriaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categorias = Categoria::all();
+        $categorias = Categoria::paginate(5);
+        if ($request->ajax()) {
+            return response()->json($categorias);
+        }
         return view('categorias.index', compact('categorias'));
     }
 
@@ -21,13 +26,12 @@ class CategoriaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:255'
+            'nombre' => 'required|string|max:50'
         ]);
 
         Categoria::create($request->all());
 
-        return redirect()->route('categorias.index')->with('success', 'Categoria creada con éxito.');
+        return response()->json(['success' => true]);
     }
 
     public function edit($id)
@@ -39,8 +43,7 @@ class CategoriaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:255'
+            'nombre' => 'required|string|max:50'
         ]);
 
         $categoria = Categoria::findOrFail($id);
@@ -53,5 +56,19 @@ class CategoriaController extends Controller
     {
         Categoria::destroy($id);
         return redirect()->route('categorias.index')->with('success', 'Categoria eliminada con éxito.');
+    }
+
+    public function export($format)
+    {
+        $categorias = Categoria::all();
+        if ($format === 'excel') {
+            $export = new CategoriaExport();
+            return $export->export();
+        } elseif ($format === 'pdf') {
+            $pdf = PDF::loadView('exports.categorias_pdf', compact('categorias'));
+            return $pdf->download('categorias.pdf');
+        }
+
+        return redirect()->back()->with('error', 'Formato no soportado');
     }
 }

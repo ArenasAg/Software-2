@@ -9,7 +9,7 @@ class DetalleFactura extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'detalle_facturas';
 
@@ -17,7 +17,17 @@ class DetalleFactura extends Model
         'cantidad',
         'valor_total',
         'descuento',
-        'producto_id',
+        'libro_id',
         'factura_id'
     ];
+
+    public function factura()
+    {
+        return $this->belongsTo(Factura::class);
+    }
+
+    public function libro()
+    {
+        return $this->belongsTo(Libro::class);
+    }
 }

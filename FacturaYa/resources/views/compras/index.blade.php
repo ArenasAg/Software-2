@@ -1,60 +1,119 @@
-@extends('layouts.layout')
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>FacturaYa</title>
 
-@section('title', 'Compras')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="theme-modern">
+<button id="sidebarCollapse">
+    <i class="fas fa-bars"></i>
+</button>
 
-@section('content')
-<div class="container">
-    <h1>Compras</h1>
-
-    <!-- Filtros -->
-    <div class="filters mb-4">
-        <form method="GET" action="{{ route('compras.index') }}" class="form-inline justify-content-center">
-            <div class="form-group mx-2 mb-2">
-                <label for="category" class="sr-only">Categoría:</label>
-                <select name="category" id="category" class="form-control form-control-sm">
-                    <option value="">Todas</option>
-                    @foreach($categorias as $categoria)
-                        <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group mx-2 mb-2">
-                <label for="price" class="sr-only">Precio:</label>
-                <input type="range" name="price" id="price" min="0" max="1000" step="10" class="form-control form-control-sm">
-            </div>
-            <div class="form-group mx-2 mb-2">
-                <label for="sort" class="sr-only">Ordenar por:</label>
-                <select name="sort" id="sort" class="form-control form-control-sm">
-                    <option value="name_asc">Nombre (A-Z)</option>
-                    <option value="name_desc">Nombre (Z-A)</option>
-                    <option value="price_asc">Precio (Menor a Mayor)</option>
-                    <option value="price_desc">Precio (Mayor a Menor)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm mb-2">Aplicar Filtros</button>
-        </form>
+<nav class="sidebar-modern">
+    <div class="text-center mb-4">
+        <h3>FacturaYa</h3>
+        <p>Biblioteca</p>
     </div>
 
-    <!-- Lista de productos -->
-    <div class="products row">
-        @foreach($productos as $producto)
-            <div class="producto col-md-3 mb-4">
-                <div class="card h-100 shadow-sm rounded">
-                    <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="card-img-top rounded-top img-fluid" style="width: 100%; height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $producto->nombre }}</h5>
-                        <p class="card-text">{{ $producto->descripcion }}</p>
-                        <p class="card-text">Precio: ${{ $producto->precio }}</p>
-                        <a  class="btn btn-success btn-sm">Agregar al Carrito</a>
+    <div class="user-profile text-center mb-4">
+        <img src="https://via.placeholder.com/80" alt="Perfil de usuario" class="rounded-circle mb-3" width="80" height="80">
+        <h6>Bienvenido, Usuario</h6>
+    </div>
+
+    <ul class="menu-modern">
+        <li>
+            <div class="search-container d-flex align-items-center">
+                <input type="text" class="search-modern form-control" id="libroSearch" placeholder="Buscar libros...">
+            </div>
+        </li>
+        <li>
+            <a href="#" data-bs-toggle="collapse" data-bs-target="#filterSubmenu" aria-expanded="false" aria-controls="filterSubmenu">
+                <i class="fas fa-filter"></i>
+                Filtros
+            </a>
+            <ul class="collapse submenu" id="filterSubmenu">
+                <li>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#filterSubmenuOrdenar" aria-expanded="false" aria-controls="filterSubmenu">
+                        <i class="fas fa-filter"></i>
+                        Ordenar por
+                    </a>
+                    <ul class="collapse submenu" id="filterSubmenuOrdenar">
+                        <li>
+                            <a href="libros/filter" class="sort-filter" data-sort="name_asc">Nombre (A-Z)</a>
+                        </li>
+                        <li>
+                            <a href="libros/filter" class="sort-filter" data-sort="name_desc">Nombre (Z-A)</a>
+                        </li>
+                        <li>
+                            <a href="libros/filter" class="sort-filter" data-sort="recent">Más recientes</a>
+                        </li>
+                        <li>
+                            <a href="libros/filter" class="sort-filter" data-sort="oldest">Más antiguos</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#filterSubmenuCategorias" aria-expanded="false" aria-controls="filterSubmenu">
+                        <i class="fas fa-filter"></i>
+                        Categorias
+                    </a>
+                    <ul class="collapse submenu" id="filterSubmenuCategorias">
+                        @foreach($categorias as $categoria)
+                            <li>
+                                <a href="#" class="category-filter" data-category="{{ $categoria->id }}">{{ $categoria->nombre }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="content-area">
+    <div class="row" id="productList">
+        @foreach($libros->chunk(4) as $chunk)
+            <div class="row mb-4">
+                @foreach($chunk as $libro)
+                    <div class="col-md-3 d-flex align-items-stretch">
+                        <div class="card w-100">
+                            <img src="{{ asset('storage/' . $libro->imagen) }}" class="card-img-top" alt="{{ $libro->nombre }}" style="height: 500px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ $libro->nombre }}</h5>
+                                <p class="card-text"><strong>Precio:</strong> ${{ $libro->precio }}</p>
+                                <a href="{{ route('libros.show', $libro->id) }}" class="btn btnAdd mt-auto">Ver detalles</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                @endforeach
             </div>
         @endforeach
     </div>
 
-    <!-- Paginación -->
-    <div class="pagination justify-content-center">
-        {{ $productos->links() }}
+    <div class="d-flex justify-content-center mt-4">
+        {{ $libros->links() }}
     </div>
 </div>
-@endsection
+
+<div class="notification-bell">
+    <i class="fas fa-bell"></i>
+    <span class="notification-dot"></span>
+</div>
+
+<button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+</button>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('js/script.js') }}"></script>
+
+</body>
+</html>

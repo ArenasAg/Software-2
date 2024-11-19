@@ -1,16 +1,15 @@
-<!-- resources/views/layouts/categoria.blade.php -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FacturaYa</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>BIBLIOTECA</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="theme-modern">
 
@@ -21,7 +20,7 @@
 <nav class="sidebar-modern">
     <div class="text-center mb-4">
         <h3>FacturaYa</h3>
-        <p class="text-muted">Sistema de Facturación</p>
+        <p>Sistema de Facturación</p>
     </div>
 
     <div class="user-profile text-center mb-4">
@@ -31,7 +30,7 @@
 
     <ul class="menu-modern">
         <li>
-            <a href="{{ url('/') }}">
+            <a href="{{ url('/dashboard') }}">
                 <i class="fas fa-home"></i>
                 Dashboard
             </a>
@@ -46,12 +45,6 @@
             <a href="{{ route('clientes.index') }}">
                 <i class="fas fa-users"></i>
                 Clientes
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('detalleFacturas.index') }}">
-                <i class="fas fa-file-invoice-dollar"></i>
-                Detalle Facturas
             </a>
         </li>
         <li>
@@ -85,13 +78,14 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('productos.index') }}">
+            <a href="{{ route('libros.index') }}">
                 <i class="fas fa-shopping-cart"></i>
-                Productos
+                Libros
             </a>
         </li>
     </ul>
 </nav>
+
 
 <div class="content-area">
     @yield('content')

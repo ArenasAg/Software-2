@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Informe;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\InformeExport;
 
 class InformeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $informes = Informe::all();
+        $informes = Informe::paginate(5);
+        if ($request->ajax()) {
+            return response()->json($informes);
+        }
         return view('informes.index', compact('informes'));
     }
 
@@ -28,7 +33,7 @@ class InformeController extends Controller
 
         Informe::create($request->all());
 
-        return redirect()->route('informes.index')->with('success', 'Informe creado con éxito.');
+        return response()->json(['success' => true]);
     }
 
     public function edit($id)
@@ -55,5 +60,19 @@ class InformeController extends Controller
     {
         Informe::destroy($id);
         return redirect()->route('informes.index')->with('success', 'Informe eliminado con éxito.');
+    }
+
+    public function export($format)
+    {
+        $informes = Informe::all();
+        if ($format === 'excel') {
+            $export = new InformeExport();
+            return $export->export();
+        } elseif ($format === 'pdf') {
+            $pdf = PDF::loadView('exports.informes_pdf', compact('informes'));
+            return $pdf->download('informes.pdf');
+        }
+
+        return redirect()->back()->with('error', 'Formato no soportado');
     }
 }
