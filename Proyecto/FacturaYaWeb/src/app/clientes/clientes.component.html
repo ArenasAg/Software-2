@@ -1,0 +1,161 @@
+<div class="content-area">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Clientes</h2>
+    <button class="btn btnAdd" (click)="selectCliente(null)" data-bs-toggle="modal" data-bs-target="#newClientModal">
+      <i class="fas fa-plus"></i> Crear Nuevo Cliente
+    </button>
+  </div>
+
+  <div class="card-modern mb-4">
+    <div class="row align-items-center">
+      <div class="col-md-10">
+        <div class="search-container d-flex align-items-center">
+          <i class="fas fa-search search-icon me-2"></i>
+          <input type="text" class="search-modern form-control" id="clientSearch" placeholder="Buscar clientes...">
+        </div>
+      </div>
+      <div class="col-md-2 d-flex justify-content-end">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+            <i class="fas fa-filter"></i> Filtros
+          </button>
+          <div class="dropdown-menu p-3" style="width: 250px;">
+            <div class="mb-3">
+              <label class="form-label">Ordenar por:</label>
+              <select class="form-select" id="sortFilter">
+                <option value="name_asc">Nombre (A-Z)</option>
+                <option value="name_desc">Nombre (Z-A)</option>
+                <option value="recent">Más recientes</option>
+                <option value="oldest">Más antiguos</option>
+              </select>
+            </div>
+            <button class="btn btnAdd w-100" id="applyFilters">Aplicar Filtros</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-modern">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Numero de documento</th>
+            <th>Nombre</th>
+            <th>Direccion</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th>Ciudad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="clientes.length === 0">
+            <td colspan="8">No hay clientes disponibles.</td>
+          </tr>
+          <tr *ngFor="let cliente of clientes">
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.numero_documento }}</td>
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.direccion }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.ciudad }}</td>
+            <td>
+              <button class="btn btn-sm btnAdd" (click)="selectCliente(cliente)" data-bs-toggle="modal" data-bs-target="#editClientModal">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteCliente(cliente.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal para Nuevo Cliente -->
+  <div class="modal fade" id="newClientModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Cliente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="createCliente(selectedCliente)">
+            <div class="mb-3">
+              <label class="form-label">Numero de documento</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.numero_documento" name="numero_documento" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.nombre" name="nombre" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Direccion</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.direccion" name="direccion" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Telefono</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.telefono" name="telefono" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" [(ngModel)]="selectedCliente.email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ciudad</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.ciudad" name="ciudad" required>
+            </div>
+            <button type="submit" class="btn btnAdd">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Editar Cliente -->
+  <div class="modal fade" id="editClientModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Cliente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="updateCliente(selectedCliente)">
+            <div class="mb-3">
+              <label class="form-label">Numero de documento</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.numero_documento" name="numero_documento" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.nombre" name="nombre" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Direccion</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.direccion" name="direccion" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Telefono</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.telefono" name="telefono" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" [(ngModel)]="selectedCliente.email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ciudad</label>
+              <input type="text" class="form-control" [(ngModel)]="selectedCliente.ciudad" name="ciudad" required>
+            </div>
+            <button type="submit" class="btn btnAdd">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

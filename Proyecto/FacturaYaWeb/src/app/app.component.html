@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura Ya</title>
+</head>
+<body class="theme-modern">
+
+<button id="sidebarCollapse">
+    <i class="fas fa-bars"></i>
+</button>
+
+<nav class="sidebar-modern">
+    <div class="text-center mb-4">
+        <h3>FacturaYa</h3>
+        <p>Sistema de Facturación</p>
+    </div>
+
+    <div class="user-profile text-center mb-4">
+        <img src="https://via.placeholder.com/80" alt="Perfil de usuario" class="rounded-circle mb-3" width="80" height="80">
+        <h6>Bienvenido, Usuario</h6>
+    </div>
+
+    <ul class="menu-modern">
+        <li>
+            <a routerLink="/dashboard">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a routerLink="/categorias">
+                <i class="fas fa-tags"></i>
+                Categorías
+            </a>
+        </li>
+        <li>
+            <a routerLink="/clientes">
+                <i class="fas fa-users"></i>
+                Clientes
+            </a>
+        </li>
+        <li>
+            <a routerLink="/facturas">
+                <i class="fas fa-file-invoice"></i>
+                Facturas
+            </a>
+        </li>
+        <li>
+            <a routerLink="/impuestos">
+                <i class="fas fa-percent"></i>
+                Impuestos
+            </a>
+        </li>
+        <li>
+            <a routerLink="/informes">
+                <i class="fas fa-chart-bar"></i>
+                Informes
+            </a>
+        </li>
+        <li>
+            <a routerLink="/inventarios">
+                <i class="fas fa-box"></i>
+                Inventarios
+            </a>
+        </li>
+        <li>
+            <a routerLink="/metodoPagos">
+                <i class="fas fa-credit-card"></i>
+                Métodos de Pago
+            </a>
+        </li>
+        <li>
+            <a routerLink="/libros">
+                <i class="fas fa-shopping-cart"></i>
+                Libros
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<div class="content-area">
+  <router-outlet></router-outlet>
+</div>
+
+<div class="notification-bell">
+    <i class="fas fa-bell"></i>
+    <span class="notification-dot"></span>
+</div>
+
+<button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+</button>
+
+</body>
+</html>
+
