@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class Usuario{
     private String nombre;
     private int edad;
@@ -67,11 +70,10 @@ static class Builder {
 }
 
 
-
 public class Main {
     public static void main(String[] args) {
         Usuario usuario = new Usuario.Builder()
-                .setNombre("Samuel")
+                .setNombre("Anderson")
                 .setEdad(18)
                 .setCorreo("ola@gmail.com")
                 .setIntereses("Futbol")
