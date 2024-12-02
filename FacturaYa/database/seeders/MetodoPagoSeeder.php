@@ -14,32 +14,26 @@ class MetodoPagoSeeder extends Seeder
     {
         DB::table('metodo_pagos')->insert([
             [
-                'nombre' => 'Efectivo',
-                'identificador' => 'EF',
+                'nombre' => 'Tarjeta de Crédito Visa',
+                'identificador' => 'pm_card_visa',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nombre' => 'Tarjeta de Crédito',
-                'identificador' => 'TC',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Tarjeta de Débito',
-                'identificador' => 'TD',
+                'nombre' => 'Tarjeta de Débito Visa',
+                'identificador' => 'pm_card_visa_debit',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'nombre' => 'Transferencia Bancaria',
-                'identificador' => 'TB',
+                'identificador' => 'bank_transfer',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nombre' => 'PayPal',
-                'identificador' => 'PP',
+                'nombre' => 'Pago en Línea',
+                'identificador' => 'online_payment',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

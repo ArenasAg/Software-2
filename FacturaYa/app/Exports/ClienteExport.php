@@ -27,7 +27,6 @@ class ClienteExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Numero de documento',
-            'Nombre',
             'Direccion',
             'Telefono',
             'Email',
@@ -50,22 +49,20 @@ class ClienteExport implements FromCollection, WithHeadings
         // Set the headers
         $sheet->setCellValue('A1', 'ID');
         $sheet->setCellValue('B1', 'Numero de documento');
-        $sheet->setCellValue('C1', 'Nombre');
-        $sheet->setCellValue('D1', 'Direccion');
-        $sheet->setCellValue('E1', 'Telefono');
-        $sheet->setCellValue('F1', 'Email');
-        $sheet->setCellValue('G1', 'Ciudad');
+        $sheet->setCellValue('C1', 'Direccion');
+        $sheet->setCellValue('D1', 'Telefono');
+        $sheet->setCellValue('E1', 'Email');
+        $sheet->setCellValue('F1', 'Ciudad');
 
         // Set the data
         $row = 2;
         foreach ($clientes as $cliente) {
             $sheet->setCellValue('A' . $row, $cliente->id);
             $sheet->setCellValue('B' . $row, $cliente->numero_documento);
-            $sheet->setCellValue('C' . $row, $cliente->nombre);
-            $sheet->setCellValue('D' . $row, $cliente->direccion);
-            $sheet->setCellValue('E' . $row, $cliente->telefono);
-            $sheet->setCellValue('F' . $row, $cliente->email);
-            $sheet->setCellValue('G' . $row, $cliente->ciudad);
+            $sheet->setCellValue('C' . $row, $cliente->direccion);
+            $sheet->setCellValue('D' . $row, $cliente->telefono);
+            $sheet->setCellValue('E' . $row, $cliente->email);
+            $sheet->setCellValue('F' . $row, $cliente->ciudad);
             $row++;
         }
 

@@ -6,17 +6,13 @@ use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Notifications\CustomVerifyEmail;
+use Illuminate\Testing\Fluent\Concerns\Has;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasFactory, Notifiable, HasRoles;
-
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new CustomVerifyEmail);
-    }
+    use HasApiTokens, HasRoles, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +20,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
      * @var array<int, string>
      */
     protected $fillable = [
+        'name',
         'email',
         'password',
         'role',

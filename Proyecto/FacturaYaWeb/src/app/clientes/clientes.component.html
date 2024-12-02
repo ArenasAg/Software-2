@@ -16,7 +16,7 @@
       </div>
       <div class="col-md-2 d-flex justify-content-end">
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+          <button class="btn btnFilter dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
             <i class="fas fa-filter"></i> Filtros
           </button>
           <div class="dropdown-menu p-3" style="width: 250px;">
@@ -48,7 +48,7 @@
             <th>Telefono</th>
             <th>Email</th>
             <th>Ciudad</th>
-            <th>Acciones</th>
+            <th style="width: 20px;">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -64,12 +64,12 @@
             <td>{{ cliente.email }}</td>
             <td>{{ cliente.ciudad }}</td>
             <td>
-              <button class="btn btn-sm btnAdd" (click)="selectCliente(cliente)" data-bs-toggle="modal" data-bs-target="#editClientModal">
+                <button class="btn btn-sm btn-info" (click)="selectCliente(cliente)" data-bs-toggle="modal" data-bs-target="#editClientModal">
                 <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-danger" (click)="deleteCliente(cliente.id)">
-                <i class="fas fa-trash"></i>
-              </button>
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteCliente(cliente.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
             </td>
           </tr>
         </tbody>
@@ -86,7 +86,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form (ngSubmit)="createCliente(selectedCliente)">
+          <form id="clienteForm" (ngSubmit)="createCliente(selectedCliente)">
             <div class="mb-3">
               <label class="form-label">Numero de documento</label>
               <input type="text" class="form-control" [(ngModel)]="selectedCliente.numero_documento" name="numero_documento" required>
@@ -111,9 +111,12 @@
               <label class="form-label">Ciudad</label>
               <input type="text" class="form-control" [(ngModel)]="selectedCliente.ciudad" name="ciudad" required>
             </div>
-            <button type="submit" class="btn btnAdd">Guardar</button>
           </form>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btnAdd" data-bs-dismiss="modal" form="clienteForm">Guardar</button>
+      </div>
       </div>
     </div>
   </div>
@@ -127,7 +130,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form (ngSubmit)="updateCliente(selectedCliente)">
+          <form id="editarClienteForm" (ngSubmit)="updateCliente(selectedCliente)">
             <div class="mb-3">
               <label class="form-label">Numero de documento</label>
               <input type="text" class="form-control" [(ngModel)]="selectedCliente.numero_documento" name="numero_documento" required>
@@ -152,9 +155,12 @@
               <label class="form-label">Ciudad</label>
               <input type="text" class="form-control" [(ngModel)]="selectedCliente.ciudad" name="ciudad" required>
             </div>
-            <button type="submit" class="btn btnAdd">Guardar</button>
           </form>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btnAdd" data-bs-dismiss="modal" form="editarClienteForm">Guardar</button>
+      </div>
       </div>
     </div>
   </div>

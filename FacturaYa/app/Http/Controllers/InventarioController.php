@@ -6,48 +6,54 @@ use App\Models\Inventario;
 use App\Models\InventarioDetalle;
 use App\Models\Libro;
 use Illuminate\Http\Request;
+use App\Http\Resources\InventarioCollection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\InventarioExport;
 
 class InventarioController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $inventarios = Inventario::with('detalles.libro')->paginate(5);
-        $libros = Libro::all();
-        if ($request->ajax()) {
-            return response()->json([
-                'inventarios' => $inventarios,
-                'libros' => $libros
-            ]);
+        $sort = $request->input('sort', 'fecha');
+        $type = $request->input('type', 'asc');
+
+        $validSort = ["fecha", "tipo_movimiento"];
+
+        if (!in_array($sort, $validSort)) {
+            $message = "Invalid sort field: $sort";
+            return response()->json(['error' => $message], 400);
         }
-        return view('inventarios.index', compact('inventarios', 'libros'));
+
+        $validType = ["asc", "desc"];
+
+        if (!in_array($type, $validType)) {
+            $message = "Invalid sort type: $type";
+            return response()->json(['error' => $message], 400);
+        }
+
+        $inventarios = Inventario::with('detalles.libro')->orderBy($sort, $type)->paginate(5);
+        return response()->json(new InventarioCollection($inventarios), 200);
     }
 
-    public function create()
-    {
-        $libros = Libro::all();
-        return view('inventarios.create', compact('libros'));
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'fecha' => 'required|date',
-            'tipo_movimiento' => 'required|string',
+            'tipo_movimiento' => 'required|string|max:255',
             'libro_id' => 'required|array',
             'libro_id.*' => 'exists:libros,id',
             'cantidad' => 'required|array',
             'cantidad.*' => 'integer|min:1'
         ]);
 
-        // Crear el registro en la tabla inventarios
-        $inventario = Inventario::create([
-            'fecha' => $request->fecha,
-            'tipo_movimiento' => $request->tipo_movimiento,
-        ]);
+        $inventario = Inventario::create($validated);
 
-        // Crear los registros en la tabla inventario_detalles
         foreach ($request->libro_id as $index => $libro_id) {
             InventarioDetalle::create([
                 'inventario_id' => $inventario->id,
@@ -56,37 +62,35 @@ class InventarioController extends Controller
             ]);
         }
 
-        return redirect()->route('inventarios.index')->with('success', 'Inventario creado exitosamente.');
+        return response()->json(['data' => $inventario], 201);
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Inventario $inventario)
     {
-        $inventario = Inventario::with('detalles.libro')->findOrFail($id);
-        $libros = Libro::all();
-        return view('inventarios.edit', compact('inventario', 'libros'));
+        return response()->json(['data' => $inventario], 200);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Inventario $inventario)
     {
-        $request->validate([
+        $validated = $request->validate([
             'fecha' => 'required|date',
-            'tipo_movimiento' => 'required|string',
+            'tipo_movimiento' => 'required|string|max:255',
             'libro_id' => 'required|array',
             'libro_id.*' => 'exists:libros,id',
             'cantidad' => 'required|array',
             'cantidad.*' => 'integer|min:1'
         ]);
 
-        $inventario = Inventario::findOrFail($id);
-        $inventario->update([
-            'fecha' => $request->fecha,
-            'tipo_movimiento' => $request->tipo_movimiento,
-        ]);
+        $inventario->update($validated);
 
-        // Eliminar los detalles existentes
         InventarioDetalle::where('inventario_id', $inventario->id)->delete();
 
-        // Crear los nuevos registros en la tabla inventario_detalles
         foreach ($request->libro_id as $index => $libro_id) {
             InventarioDetalle::create([
                 'inventario_id' => $inventario->id,
@@ -95,15 +99,23 @@ class InventarioController extends Controller
             ]);
         }
 
-        return redirect()->route('inventarios.index')->with('success', 'Inventario actualizado con éxito.');
+        return response()->json(['data' => $inventario], 200);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Inventario $inventario)
     {
-        Inventario::destroy($id);
-        return redirect()->route('inventarios.index')->with('success', 'Inventario eliminado con éxito.');
+        InventarioDetalle::where('inventario_id', $inventario->id)->delete();
+        $inventario->delete();
+
+        return response(null, 204);
     }
 
+    /**
+     * Export the specified resource in the given format.
+     */
     public function export($format)
     {
         $inventarios = Inventario::all();

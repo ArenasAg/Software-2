@@ -8,52 +8,50 @@ use App\Models\Cliente;
 use App\Models\MetodoPago;
 use App\Models\Libro;
 use Illuminate\Http\Request;
+use App\Http\Resources\FacturaCollection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\FacturaExport;
-use Carbon\Carbon;
 
 class FacturaController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $facturas = Factura::with('detalles.libro')->paginate(5);
-        $clientes = Cliente::all();
-        $metodoPagos = MetodoPago::all();
-        $libros = Libro::all();
-        if ($request->ajax()) {
-            return response()->json([
-                'facturas' => $facturas,
-                'clientes' => $clientes,
-                'metodoPagos' => $metodoPagos,
-                'libros' => $libros
-            ]);
+        $sort = $request->input('sort', 'codigo');
+        $type = $request->input('type', 'asc');
+
+        $validSort = ["codigo", "total"];
+
+        if (!in_array($sort, $validSort)) {
+            $message = "Invalid sort field: $sort";
+            return response()->json(['error' => $message], 400);
         }
-        return view('facturas.index', compact('facturas', 'clientes', 'metodoPagos', 'libros'));
+
+        $validType = ["asc", "desc"];
+
+        if (!in_array($type, $validType)) {
+            $message = "Invalid sort type: $type";
+            return response()->json(['error' => $message], 400);
+        }
+
+        $facturas = Factura::with('detalles.libro')->orderBy($sort, $type)->paginate(5);
+        return response()->json(new FacturaCollection($facturas), 200);
     }
 
-    public function show($id)
-    {
-        $factura = Factura::with('detalles.libro')->findOrFail($id);
-        return response()->json($factura);
-    }
-
-    public function create()
-    {
-        $clientes = Cliente::all();
-        $metodoPagos = MetodoPago::all();
-        $libros = Libro::all();
-        return view('facturas.create', compact('clientes', 'metodoPagos', 'libros'));
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'codigo' => 'required',
+        $validated = $request->validate([
+            'codigo' => 'required|string|max:50|unique:facturas',
             'fecha' => 'required|date|before_or_equal:today',
             'subtotal' => 'required|numeric',
             'total_impuestos' => 'required|numeric',
             'total' => 'required|numeric',
-            'estado' => 'required',
+            'estado' => 'required|boolean',
             'cliente_id' => 'required|exists:clientes,id',
             'metodo_pago_id' => 'required|exists:metodo_pagos,id',
             'libro_id' => 'required|array',
@@ -87,30 +85,32 @@ class FacturaController extends Controller
                 ]);
             }
 
-            return redirect()->route('facturas.index')->with('success', 'Factura creada exitosamente.');
+            return response()->json(['data' => $factura], 201);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al crear la factura: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al crear la factura: ' . $e->getMessage()], 500);
         }
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Factura $factura)
     {
-        $factura = Factura::with('detalles.libro')->findOrFail($id);
-        $clientes = Cliente::all();
-        $metodoPagos = MetodoPago::all();
-        $libros = Libro::all();
-        return view('facturas.edit', compact('factura', 'clientes', 'metodoPagos', 'libros'));
+        return response()->json(['data' => $factura], 200);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Factura $factura)
     {
-        $request->validate([
-            'codigo' => 'required',
+        $validated = $request->validate([
+            'codigo' => 'required|string|max:50|unique:facturas,codigo,' . $factura->id,
             'fecha' => 'required|date|before_or_equal:today',
             'subtotal' => 'required|numeric',
             'total_impuestos' => 'required|numeric',
             'total' => 'required|numeric',
-            'estado' => 'required',
+            'estado' => 'required|boolean',
             'cliente_id' => 'required|exists:clientes,id',
             'metodo_pago_id' => 'required|exists:metodo_pagos,id',
             'libro_id' => 'required|array',
@@ -122,7 +122,6 @@ class FacturaController extends Controller
         ]);
 
         try {
-            $factura = Factura::findOrFail($id);
             $factura->update($request->only([
                 'codigo', 'fecha', 'subtotal', 'total_impuestos', 'total', 'estado', 'cliente_id', 'metodo_pago_id'
             ]));
@@ -147,23 +146,29 @@ class FacturaController extends Controller
                 ]);
             }
 
-            return redirect()->route('facturas.index')->with('success', 'Factura actualizada con éxito.');
+            return response()->json(['data' => $factura], 200);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al actualizar la factura: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al actualizar la factura: ' . $e->getMessage()], 500);
         }
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Factura $factura)
     {
         try {
-            DetalleFactura::where('factura_id', $id)->delete();
-            Factura::destroy($id);
-            return redirect()->route('facturas.index')->with('success', 'Factura eliminada con éxito.');
+            DetalleFactura::where('factura_id', $factura->id)->delete();
+            $factura->delete();
+            return response(null, 204);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al eliminar la factura: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al eliminar la factura: ' . $e->getMessage()], 500);
         }
     }
 
+    /**
+     * Export the specified resource in the given format.
+     */
     public function export($format)
     {
         $facturas = Factura::all();
@@ -173,8 +178,8 @@ class FacturaController extends Controller
         } elseif ($format === 'pdf') {
             $pdf = PDF::loadView('exports.facturas_pdf', compact('facturas'));
             return $pdf->download('facturas.pdf');
+        } else {
+            return response()->json(['error' => 'Formato no soportado'], 400);
         }
-
-        return redirect()->back()->with('error', 'Formato no soportado');
     }
 }

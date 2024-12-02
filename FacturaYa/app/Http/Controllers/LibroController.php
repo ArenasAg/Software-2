@@ -7,42 +7,56 @@ use App\Models\Categoria;
 use App\Models\Impuesto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Exports\LibroExport;
+use App\Http\Resources\LibroCollection;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\LibroExport;
 
 class LibroController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $libros = Libro::paginate(5);
-        $categorias = Categoria::all();
-        $impuestos = Impuesto::all();
-        if ($request->ajax()) {
-            return response()->json([
-                'libros' => $libros,
-                'categorias' => $categorias,
-                'impuestos' => $impuestos
-            ]);
+        $sort = $request->input('sort', 'nombre');
+        $type = $request->input('type', 'asc');
+
+        $validSort = ["nombre", "precio"];
+
+        if (!in_array($sort, $validSort)) {
+            $message = "Invalid sort field: $sort";
+            return response()->json(['error' => $message], 400);
         }
-        return view('libros.index', compact('libros', 'categorias', 'impuestos'));
-    }
 
-    public function create()
-    {
-        $libros = Libro::all();
+        $validType = ["asc", "desc"];
+
+        if (!in_array($type, $validType)) {
+            $message = "Invalid sort type: $type";
+            return response()->json(['error' => $message], 400);
+        }
+
+        $libros = Libro::orderBy($sort, $type)->paginate(5);
         $categorias = Categoria::all();
         $impuestos = Impuesto::all();
-        return view('libros.create', compact('libros', 'categorias', 'impuestos'));
+
+        return response()->json([
+            'libros' => new LibroCollection($libros),
+            'categorias' => $categorias,
+            'impuestos' => $impuestos,
+        ], 200);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'codigo' => 'required|unique:libros',
-            'nombre' => 'required',
+            'nombre' => 'required|string|max:255',
             'imagen' => 'nullable|image',
             'precio' => 'required|numeric',
-            'medida' => 'required',
+            'medida' => 'required|string|max:255',
             'stock' => 'required|integer',
             'categoria_id' => 'required|exists:categorias,id',
             'impuesto_id' => 'required|exists:impuestos,id'
@@ -55,33 +69,34 @@ class LibroController extends Controller
             $data['imagen'] = $request->file('imagen')->storeAs('img', $filename, 'public');
         }
 
-        Libro::create($data);
+        $libro = Libro::create($data);
 
-        return response()->json(['success' => true]);
+        return response()->json(['data' => $libro], 201);
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Libro $libro)
     {
-        $libro = Libro::findOrFail($id);
-        $categorias = Categoria::all();
-        $impuestos = Impuesto::all();
-        return view('libros.edit', compact('libro', 'categorias', 'impuestos'));
+        return response()->json(['data' => $libro], 200);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Libro $libro)
     {
-        $request->validate([
-            'codigo' => 'required|unique:libros,codigo,' . $id,
-            'nombre' => 'required',
+        $validated = $request->validate([
+            'codigo' => 'required|unique:libros,codigo,' . $libro->id,
+            'nombre' => 'required|string|max:255',
             'imagen' => 'nullable|image',
             'precio' => 'required|numeric',
-            'medida' => 'required',
+            'medida' => 'required|string|max:255',
             'stock' => 'required|integer',
             'categoria_id' => 'required|exists:categorias,id',
             'impuesto_id' => 'required|exists:impuestos,id'
         ]);
-
-        $libro = Libro::findOrFail($id);
 
         $data = $request->all();
 
@@ -98,13 +113,14 @@ class LibroController extends Controller
 
         $libro->update($data);
 
-        return redirect()->route('libros.index')->with('success', 'Libro actualizado con éxito.');
+        return response()->json(['data' => $libro], 200);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Libro $libro)
     {
-        $libro = Libro::findOrFail($id);
-
         // Eliminar la imagen del sistema de archivos
         if ($libro->imagen) {
             Storage::disk('public')->delete($libro->imagen);
@@ -112,9 +128,12 @@ class LibroController extends Controller
 
         $libro->delete();
 
-        return redirect()->route('libros.index')->with('success', 'Libro eliminado con éxito.');
+        return response(null, 204);
     }
 
+    /**
+     * Search for resources based on query.
+     */
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -127,9 +146,12 @@ class LibroController extends Controller
             ->orWhere('impuesto_id', 'LIKE', "%{$query}%")
             ->get();
 
-        return response()->json($libros);
+        return response()->json(['data' => $libros], 200);
     }
 
+    /**
+     * Filter resources based on sort criteria.
+     */
     public function filter(Request $request)
     {
         $sort = $request->input('sort');
@@ -146,9 +168,12 @@ class LibroController extends Controller
         }
 
         $libros = $libros->get();
-        return response()->json($libros);
+        return response()->json(['data' => $libros], 200);
     }
 
+    /**
+     * Export the specified resource in the given format.
+     */
     public function export($format)
     {
 

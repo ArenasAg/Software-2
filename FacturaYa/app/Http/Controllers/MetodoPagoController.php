@@ -4,85 +4,103 @@ namespace App\Http\Controllers;
 
 use App\Models\MetodoPago;
 use Illuminate\Http\Request;
-use App\Exports\MetodoPagoExport;
+use App\Http\Resources\MetodoPagoCollection;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Events\MetodoPagoUpdated;
+use App\Exports\MetodoPagoExport;
 
 class MetodoPagoController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $metodoPagos = MetodoPago::paginate(5);
-        if ($request->ajax()) {
-            return response()->json($metodoPagos);
+        $sort = $request->input('sort', 'nombre');
+        $type = $request->input('type', 'asc');
+
+        $validSort = ["nombre", "identificador"];
+
+        if (!in_array($sort, $validSort)) {
+            $message = "Invalid sort field: $sort";
+            return response()->json(['error' => $message], 400);
         }
-        return view('metodoPagos.index', compact('metodoPagos'));
+
+        $validType = ["asc", "desc"];
+
+        if (!in_array($type, $validType)) {
+            $message = "Invalid sort type: $type";
+            return response()->json(['error' => $message], 400);
+        }
+
+        $metodoPagos = MetodoPago::orderBy($sort, $type)->paginate(5);
+        return response()->json(new MetodoPagoCollection($metodoPagos), 200);
     }
 
-    public function create()
-    {
-        return view('metodoPagos.create');
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'identificador' => 'required|unique:metodo_pagos,identificador'
         ]);
 
-        MetodoPago::create($request->all());
+        $metodoPago = MetodoPago::create($validated);
 
-        $metodoPagos = MetodoPago::all();
-        event(new MetodoPagoUpdated($metodoPagos));
-
-        return response()->json(['success' => true]);
+        return response()->json(['data' => $metodoPago], 201);
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(MetodoPago $metodoPago)
     {
-        $metodoPago = MetodoPago::findOrFail($id);
-        return view('metodoPagos.edit', compact('metodoPago'));
+        return response()->json(['data' => $metodoPago], 200);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, MetodoPago $metodoPago)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
-            'identificador' => 'required|unique:metodo_pagos,identificador,' . $id
+            'identificador' => 'required|unique:metodo_pagos,identificador,' . $metodoPago->id
         ]);
 
-        $metodoPago = MetodoPago::findOrFail($id);
-        $metodoPago->update($request->all());
+        $metodoPago->update($validated);
 
-        $metodoPagos = MetodoPago::all();
-        event(new MetodoPagoUpdated($metodoPago));
-
-        return redirect()->route('metodoPagos.index')->with('success', 'Metodo de Pago actualizado con éxito.');
+        return response()->json(['data' => $metodoPago], 200);
     }
 
-    public function destroy(Request $request, $id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(MetodoPago $metodoPago)
     {
-        MetodoPago::destroy($id);
+        $metodoPago->delete();
 
-        $metodoPagos = MetodoPago::all();
-        broadcast(new MetodoPagoUpdated($metodoPagos));
-
-        return redirect()->route('metodoPagos.index')->with('success', 'Metodo de Pago eliminado con éxito.');
+        return response(null, 204);
     }
 
+    /**
+     * Search for resources based on query.
+     */
     public function search(Request $request)
     {
         $query = $request->input('query');
         $metodoPagos = MetodoPago::where('nombre', 'LIKE', "%{$query}%")
             ->orWhere('identificador', 'LIKE', "%{$query}%")
             ->orWhere('id', 'LIKE', "%{$query}%")
-            // Agrega más campos según sea necesario
             ->get();
 
-        return response()->json($metodoPagos);
+        return response()->json(['data' => $metodoPagos], 200);
     }
 
+    /**
+     * Filter resources based on sort criteria.
+     */
     public function filter(Request $request)
     {
         $sort = $request->input('sort');
@@ -99,9 +117,12 @@ class MetodoPagoController extends Controller
         }
 
         $metodoPagos = $metodoPagos->get();
-        return response()->json($metodoPagos);
+        return response()->json(['data' => $metodoPagos], 200);
     }
 
+    /**
+     * Export the specified resource in the given format.
+     */
     public function export($format)
     {
         $metodoPagos = MetodoPago::all();

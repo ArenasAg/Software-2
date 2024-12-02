@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->string('numero_documento')->unique();
-            $table->string('nombre')->nullable(false);
+            $table->string('numero_documento')->unique()->nullable(false);
             $table->string('direccion')->nullable(false);
-            $table->string('telefono')->nullable(false);
+            $table->string('telefono', 10)->nullable(false);
             $table->string('ciudad')->nullable(false);
             $table->boolean('activo')->default(false)->nullable(false);
             $table->timestamps();

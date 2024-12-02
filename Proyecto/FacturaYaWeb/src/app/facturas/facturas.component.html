@@ -1,0 +1,286 @@
+<div class="content-area">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lista de Facturas</h2>
+        <button class="btn btnAdd" (click)="selectFactura(null)" data-bs-toggle="modal" data-bs-target="#newFacturaModal">
+            <i class="fas fa-plus"></i> Crear Nueva Factura
+        </button>
+    </div>
+
+    <div class="card-modern mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-10">
+                <div class="search-container d-flex align-items-center">
+                    <i class="fas fa-search search-icon me-2"></i>
+                    <input type="text" class="search-modern form-control" id="facturaSearch" placeholder="Buscar facturas...">
+                </div>
+            </div>
+            <div class="col-md-2 d-flex justify-content-end">
+                <div class="dropdown">
+                    <button class="btn btnFilter dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i> Filtros
+                    </button>
+                    <div class="dropdown-menu p-3" style="width: 250px;">
+                        <div class="mb-3">
+                            <label class="form-label">Ordenar por:</label>
+                            <select class="form-select" id="sortFilter">
+                                <option value="name_asc">Nombre (A-Z)</option>
+                                <option value="name_desc">Nombre (Z-A)</option>
+                                <option value="recent">Más recientes</option>
+                                <option value="oldest">Más antiguos</option>
+                            </select>
+                        </div>
+                        <button class="btn btnAdd w-100" id="applyFilters">Aplicar Filtros</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-modern">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Cliente</th>
+                        <th>Método de Pago</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="facturas.length === 0">
+                        <td colspan="8">No hay facturas disponibles.</td>
+                    </tr>
+                    <tr *ngFor="let factura of facturas">
+                        <td>{{ factura.id }}</td>
+                        <td>{{ factura.codigo }}</td>
+                        <td>{{ factura.total }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="factura.estado ? 'bg-success' : 'bg-danger'">
+                                {{ factura.estado ? 'Pago' : 'No Pago' }}
+                            </span>
+                        </td>
+                        <td>{{ factura.cliente.nombre }}</td>
+                        <td>{{ factura.metodoPago.nombre }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" (click)="viewFactura(factura)" data-bs-toggle="modal" data-bs-target="#showFacturaModal">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-info" (click)="selectFactura(factura)" data-bs-toggle="modal" data-bs-target="#editFacturaModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" (click)="deleteFactura(factura.id)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="showFacturaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ showFactura?.factura?.codigo }}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="body">
+                            <div class="accordion" id="facturaDetailsAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Productos
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse hidden" aria-labelledby="headingOne" data-bs-parent="#facturaDetailsAccordion">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <li *ngFor="let item of showFactura?.detalles">
+                                                    {{ item.producto.nombre }} - Cantidad: {{ item.cantidad }} - Precio: {{ item.producto.precio }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            Informacion Factura
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse hidden" aria-labelledby="headingTwo" data-bs-parent="#facturaDetailsAccordion">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p><strong>Fecha:</strong> {{ showFactura?.factura?.fecha }}</p>
+                                                        <p><strong>Subtotal:</strong> {{ showFactura?.factura?.subtotal }}</p>
+                                                        <p><strong>Total Impuestos:</strong> {{ showFactura?.factura?.totalImpuestos }}</p>
+                                                        <p><strong>Total:</strong> {{ showFactura?.factura?.total }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p><strong>Estado:</strong> <span class="badge" [ngClass]="showFactura?.factura?.estado ? 'bg-success' : 'bg-danger'">{{ showFactura?.factura?.estado ? 'Pago' : 'No Pago' }}</span></p>
+                                                        <p><strong>Método de Pago:</strong> {{ showFactura?.factura?.metodoPago.nombre }}</p>
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                            Informacion Cliente
+                                        </button>
+                                    </h2>
+                                    <div id="collapseThree" class="accordion-collapse collapse hidden" aria-labelledby="headingThree" data-bs-parent="#facturaDetailsAccordion">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p><strong>Numero documento:</strong> {{ showFactura?.cliente?.numero_documento }}</p>
+                                                        <p><strong>Nombre:</strong> {{ showFactura?.cliente?.nombre }}</p>
+                                                        <p><strong>Direccion Impuestos:</strong> {{ showFactura?.cliente?.direccion }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p><strong>Email:</strong> {{ showFactura?.cliente?.email }}</p>
+                                                        <p><strong>Ciudad:</strong> {{ showFactura?.cliente?.ciudad }}</p>
+                                                        <p><strong>Telefono:</strong> {{ showFactura?.cliente?.telefono }}</p>
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nueva Factura -->
+    <div class="modal fade" id="newFacturaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Factura</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form (ngSubmit)="createFactura(selectedFactura)">
+                        <div class="mb-3">
+                            <label class="form-label">Código</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedFactura.codigo" name="codigo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha</label>
+                            <input type="date" class="form-control" [(ngModel)]="selectedFactura.fecha" name="fecha" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subtotal</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedFactura.subtotal" name="subtotal" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Total Impuestos</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedFactura.totalImpuestos" name="totalImpuestos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Total</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedFactura.total" name="total" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select" [(ngModel)]="selectedFactura.estado" name="estado" required>
+                                <option value="">Seleccione un estado</option>
+                                <option [value]="true">Pago</option>
+                                <option [value]="false">No Pago</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cliente</label>
+                            <select class="form-select" [(ngModel)]="selectedFactura.cliente" name="cliente" required>
+                                <option value="">Seleccione un cliente</option>
+                                <option *ngFor="let cliente of clientes" [ngValue]="cliente">{{ cliente.nombre }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pago</label>
+                            <select class="form-select" [(ngModel)]="selectedFactura.metodoPago" name="metodoPago" required>
+                                <option value="">Seleccione un método de pago</option>
+                                <option *ngFor="let metodo of metodoPagos" [ngValue]="metodo">{{ metodo.nombre }}</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btnAdd">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Factura -->
+    <div class="modal fade" id="editFacturaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Factura</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form (ngSubmit)="updateFactura(selectedFactura)">
+                        <div class="mb-3">
+                            <label class="form-label">Código</label>
+                            <input type="text" class="form-control" [(ngModel)]="selectedFactura.codigo" name="codigo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subtotal</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedFactura.subtotal" name="subtotal" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Total Impuestos</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedFactura.totalImpuestos" name="totalImpuestos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Total</label>
+                            <input type="number" class="form-control" [(ngModel)]="selectedFactura.total" name="total" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select" [(ngModel)]="selectedFactura.estado" name="estado" required>
+                                <option value="">Seleccione un estado</option>
+                                <option [value]="true">Pago</option>
+                                <option [value]="false">No Pago</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cliente</label>
+                            <select class="form-select" [(ngModel)]="selectedFactura.cliente" name="cliente" required>
+                                <option value="">Seleccione un cliente</option>
+                                <option *ngFor="let cliente of clientes" [ngValue]="cliente">{{ cliente.nombre }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pago</label>
+                            <select class="form-select" [(ngModel)]="selectedFactura.metodoPago" name="metodoPago" required>
+                                <option value="">Seleccione un método de pago</option>
+                                <option *ngFor="let metodo of metodoPagos" [ngValue]="metodo">{{ metodo.nombre }}</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btnAdd">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

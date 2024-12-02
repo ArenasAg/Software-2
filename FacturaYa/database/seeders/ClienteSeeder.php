@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class ClienteSeeder extends Seeder
 {
@@ -67,16 +68,22 @@ class ClienteSeeder extends Seeder
             ],
         ];
 
+        Role::create(['name' => 'cliente']);
+
         foreach ($clientes as $cliente) {
+            $nombre = $cliente['nombre'];
+            unset($cliente['nombre']);
+
             $clienteId = DB::table('clientes')->insertGetId($cliente);
 
-            $nombreParts = explode(' ', $cliente['nombre']);
+            $nombreParts = explode(' ', $nombre);
             $email = strtolower($nombreParts[0] . '.' . end($nombreParts)) . '@gmail.com';
 
             // Crear usuario asociado al cliente
             $user = User::firstOrCreate(
                 ['cliente_id' => $clienteId],
                 [
+                    'name' => $nombre,
                     'email' => $email,
                     'password' => bcrypt('password'), // Cambia esto por una contraseña segura
                     'role' => 'cliente',

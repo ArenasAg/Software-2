@@ -4,70 +4,96 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Resources\ClienteCollection;
 use App\Exports\ClienteExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ClienteController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $clientes = Cliente::paginate(5);
-        if ($request->ajax()) {
-            return response()->json($clientes);
+        $sort = $request->input('sort', 'activo');
+        $type = $request->input('type', 'asc');
+
+        $validSort = ["activo", "ciudad"];
+
+        if (!in_array($sort, $validSort)) {
+            $message = "Invalid sort field: $sort";
+            return response()->json(['error' => $message], 400);
         }
-        return view('clientes.index', compact('clientes'));
+
+        $validType = ["asc", "desc"];
+
+        if (!in_array($type, $validType)) {
+            $message = "Invalid sort type: $type";
+            return response()->json(['error' => $message], 400);
+        }
+
+        $clientes = Cliente::orderBy($sort, $type)->get();
+        return response()->json(new ClienteCollection($clientes), 200);
     }
 
-    public function create()
-    {
-        return view('clientes.create');
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'numero_documento' => 'required|string|max:20|unique:clientes,numero_documento',
-            'nombre' => 'required|string|max:255',
-            'direccion' => 'nullable|string|max:255',
-            'telefono' => 'nullable|string|max:15',
-            'email' => 'required|email|unique:clientes,email',
-            'ciudad' => 'nullable|string|max:100',
+        $validated = $request->validate([
+            'numero_documento' => 'required|string|max:20|unique:clientes',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'ciudad' => 'required|string|max:100',
+            'activo' => 'required|boolean',
         ]);
 
-        Cliente::create($request->all());
+        $cliente = Cliente::create($validated);
 
-        return response()->json(['success' => true]);
+        return response()->json(['data' => $cliente], 201);
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Cliente $cliente)
     {
-        $cliente = Cliente::findOrFail($id);
-        return view('clientes.edit', compact('cliente'));
+        return response()->json(['data' => $cliente], 200);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Cliente $cliente)
     {
-        $request->validate([
-            'numero_documento' => 'required|string|max:20|unique:clientes,numero_documento',
-            'nombre' => 'required|string|max:255',
-            'direccion' => 'nullable|string|max:255',
-            'telefono' => 'nullable|string|max:15',
-            'email' => 'required|email',
-            'ciudad' => 'nullable|string|max:100',
+        $validated = $request->validate([
+            'numero_documento' => 'required|string|max:20|unique:clientes,numero_documento,' . $cliente->id,
+            'nombre' => 'required|string|max:100',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'ciudad' => 'required|string|max:100',
+            'activo' => 'required|boolean',
         ]);
 
-        $cliente = Cliente::findOrFail($id);
-        $cliente->update($request->all());
+        $cliente->update($validated);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado con éxito.');
+        return response()->json(['data' => $cliente], 200);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Cliente $cliente)
     {
-        Cliente::destroy($id);
-        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado con éxito.');
+        $cliente->delete();
+
+        return response(null, 204);
     }
 
+    /**
+     * Export the specified resource in the given format.
+     */
     public function export($format)
     {
         $clientes = Cliente::all();

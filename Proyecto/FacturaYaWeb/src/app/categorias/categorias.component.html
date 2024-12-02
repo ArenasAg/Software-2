@@ -1,0 +1,117 @@
+<div class="content-area">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Lista de Categorías</h2>
+      <button class="btn btnAdd" (click)="selectCategoria(null)" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+        <i class="fas fa-plus"></i> Nueva Categoría
+      </button>
+    </div>
+  
+    <div class="card-modern mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-10">
+          <div class="search-container d-flex align-items-center">
+            <i class="fas fa-search search-icon me-2"></i>
+            <input type="text" class="search-modern form-control" id="categorySearch" placeholder="Buscar categorías...">
+          </div>
+        </div>
+        <div class="col-md-2 d-flex justify-content-end">
+          <div class="dropdown">
+            <button class="btn btnFilter dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+              <i class="fas fa-filter"></i> Filtros
+            </button>
+            <div class="dropdown-menu p-3" style="width: 250px;">
+              <div class="mb-3">
+                <label class="form-label">Ordenar por:</label>
+                <select class="form-select" id="sortFilter">
+                  <option value="name_asc">Nombre (A-Z)</option>
+                  <option value="name_desc">Nombre (Z-A)</option>
+                  <option value="recent">Más recientes</option>
+                  <option value="oldest">Más antiguos</option>
+                </select>
+              </div>
+              <button class="btn btnAdd w-100" id="applyFilters">Aplicar Filtros</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="card-modern">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th style="width: 20px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="categorias.length === 0">
+              <td colspan="3">No hay categorías disponibles.</td>
+            </tr>
+            <tr *ngFor="let categoria of categorias">
+              <td>{{ categoria.id }}</td>
+              <td>{{ categoria.nombre }}</td>
+              <td>
+                  <button class="btn btn-sm btn-info" (click)="selectCategoria(categoria)" data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                  <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteCategoria(categoria.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Modal para Nueva Categoría -->
+    <div class="modal fade" id="newCategoryModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Nueva Categoría</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="categoriaForm" (ngSubmit)="createCategoria(selectedCategoria)">
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" [(ngModel)]="selectedCategoria.nombre" name="nombre" required>
+              </div>
+            </form>
+          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btnAdd" data-bs-dismiss="modal" form="categoriaForm">Guardar</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal para Editar Categoría -->
+    <div class="modal fade" id="editCategoryModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Categoría</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editarCategoriaForm" (ngSubmit)="updateCategoria(selectedCategoria)">
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" [(ngModel)]="selectedCategoria.nombre" name="nombre" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btnAdd" data-bs-dismiss="modal" form="editarCategoriaForm">Guardar</button>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>

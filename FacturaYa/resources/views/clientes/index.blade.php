@@ -79,7 +79,7 @@
                             </td>
                         </tr>
                         @endforeach
-                        <div class="d-flex justify-content-end mb-4">
+                        <div class="d-flex justify-content-end mb-4">   
                             <a href="{{ route('clientes.export', ['format' => 'excel']) }}" class="btn btn-success me-2">
                                 <i class="fas fa-file-excel"></i> Descargar Excel
                             </a>

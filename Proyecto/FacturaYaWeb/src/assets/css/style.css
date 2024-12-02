@@ -1,7 +1,7 @@
 /* Diseño 1 - Moderno y Minimalista */
 .theme-modern {
-    --primary-color: #575492;
-    --secondary-color: #F5F5F5;
+    --primary-color: #F5F5F5;
+    --secondary-color: #575492;
     --text-color: white;
     --sidebar-width: 280px;
     --transition-speed: 0.3s;
@@ -13,37 +13,30 @@ body {
     margin: 0;
     padding: 0;
     transition: all var(--transition-speed);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-body .btnAdd{
-    background-color: #8d8bcc;
-    color: var(--secondary-color)
-}
-
-body .btnAdd:hover{
-    background-color: var(--primary-color);
+h2{
+    z-index: 1000;
     color: var(--text-color);
 }
 
-.bodyAuth {
-    font-family: 'Inter', sans-serif !important;
-    background: linear-gradient(135deg, var(--secondary-color) 0%, #ffffff 100%) !important;
-    min-height: 100vh !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+body::-webkit-scrollbar {
+    width: 0px;
 }
 
-
-.login-container{
-    background: white;
-    border-radius: 20px;
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    animation: slideUp 0.5s ease-out;
+.btnAdd, .btnFilter{
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+    z-index: 1000;
 }
+
+.btnAdd:hover, .btnFilter:hover{
+    background-color: var(--primary-color);
+    color: black;
+}
+
 
 @keyframes slideUp {
     from {
@@ -56,88 +49,6 @@ body .btnAdd:hover{
     }
 }
 
-.login-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.login-header img {
-    width: 80px;
-    margin-bottom: 1rem;
-}
-
-.form-floating {
-    margin-bottom: 1rem;
-}
-
-.form-control {
-    border-radius: 10px;
-    padding: 1rem;
-    border: 2px solid var(--secondary-color);
-    transition: all 0.3s;
-}
-
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
-}
-
-.btn-login {
-    background: #8d8bcc;
-    color: white;
-    border: none;
-    padding: 0.8rem;
-    border-radius: 10px;
-    width: 100%;
-    font-weight: 600;
-    transition: all 0.3s;
-}
-
-.btn-login:hover {
-    background: var(--primary-color);
-    color: var(--text-color);
-    transform: translateY(-2px);
-}
-
-.form-check {
-    margin: 1rem 0;
-}
-
-.forgot-password {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-}
-
-.forgot-password:hover {
-    color: #5851db;
-}
-
-.register-link {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-}
-
-.register-link a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.error-message {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-    display: none;
-}
-
-.notification-bell{
-    color: #8d8bcc !important;
-}
-
-
 .dropdown-menu {
     --bs-dropdown-bg: #8d8bcc;
     --bs-dropdown-color: var(--text-color);
@@ -145,7 +56,7 @@ body .btnAdd:hover{
 
 /* Sidebar Moderno */
 .sidebar-modern {
-    color: var(--text-color);
+    color: var(--secondary-color);
     position: fixed;
     left: 0;
     top: 0;
@@ -153,13 +64,11 @@ body .btnAdd:hover{
     width: var(--sidebar-width);
     background-color: var(--primary-color);
     background-size: 100% 100%, 20px 20px;
-    border-right: 1px solid rgba(0,0,0,0.1);
+    border-right: 1px solid var(--primary-color);
     transform: translateX(-100%);
     transition: transform var(--transition-speed);
     z-index: 1000;
     padding: 2rem;
-    border-top-right-radius: 50px;
-    border-bottom-right-radius: 50px;
 }
 
 #sidebarCollapse {
@@ -197,7 +106,7 @@ body .btnAdd:hover{
     display: flex;
     align-items: center;
     padding: 1rem;
-    color: var(--text-color);
+    color: var(--secondary-color);
     text-decoration: none;
     border-radius: 12px;
     transition: all var(--transition-speed);
@@ -212,7 +121,6 @@ body .btnAdd:hover{
 .menu-modern i {
     margin-right: 1rem;
     font-size: 1.2rem;
-
 }
 
 .menu-modern .submenu {
@@ -222,13 +130,14 @@ body .btnAdd:hover{
 
 /* Cards Modernas */
 .card-modern {
-    background: var(--secondary-color);
+    color : var(--text-color);
+    background-color: var(--secondary-color);
     border-radius: 20px;
     padding: 2rem;
     margin: 1rem;
     transition: all var(--transition-speed);
     border-left: 4px solid var(--primary-color);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgb(255, 255, 255);
 }
 
 /* Stats Cards */
@@ -252,13 +161,14 @@ body .btnAdd:hover{
 
 /* Search Bar */
 .search-modern {
-    background: var(--secondary-color);
+    background: var(--primary-color);
     border: none;
     border-radius: 30px;
     padding: 1rem 2rem;
     width: 100%;
     margin: 1rem 0;
     transition: all var(--transition-speed);
+    z-index: 1000;
 }
 
 .search-modern:focus {
@@ -298,31 +208,6 @@ body .btnAdd:hover{
     margin-left: var(--sidebar-width);
 }
 
-/* Notification Bell */
-.notification-bell {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.notification-bell:hover {
-    transform: rotate(15deg);
-}
-
-.notification-dot {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 10px;
-    height: 10px;
-    background: #ff4757;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
 
 @keyframes pulse {
     0% { transform: scale(1); }
@@ -330,44 +215,6 @@ body .btnAdd:hover{
     100% { transform: scale(1); }
 }
 
-/* Notifications Dropdown */
-.notifications-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 300px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
-    padding: 1rem;
-    z-index: 1000;
-    display: none;
-}
-
-.notification-item {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.notification-item:last-child {
-    border-bottom: none;
-}
-
-.notification-item:hover {
-    background: var(--secondary-color);
-}
-
-.notification-message {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.notification-time {
-    font-size: 0.8rem;
-    color: #666;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -381,11 +228,12 @@ body .btnAdd:hover{
 }
 
 .table {
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.2);
     position: relative;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.275);
     overflow-y: auto;
     overflow-x: auto;
-    --bs-table-color: #333; /* Color del texto */
+    --bs-table-color: var(--text-color); /* Color del texto */
     --bs-table-bg: transparent; /* Color de fondo */
     --bs-table-border-color: white; /* Color del borde */
     --bs-table-accent-bg: #f8f9fa; /* Color de fondo de acento */

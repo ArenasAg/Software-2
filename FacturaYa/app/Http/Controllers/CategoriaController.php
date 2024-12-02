@@ -4,60 +4,85 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use App\Http\Resources\CategoriaCollection;
 use App\Exports\CategoriaExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Requests\CategoriaRequest;
 
 class CategoriaController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $categorias = Categoria::paginate(5);
-        if ($request->ajax()) {
-            return response()->json($categorias);
+        $sort = $request->input('sort', 'nombre');
+        $type = $request->input('type', 'asc');
+
+        $validSort = ["nombre"];
+
+        if (!in_array($sort, $validSort)) {
+            $message = "Invalid sort field: $sort";
+            return response()->json(['error' => $message], 400);
         }
-        return view('categorias.index', compact('categorias'));
+
+        $validType = ["asc", "desc"];
+
+        if (!in_array($type, $validType)) {
+            $message = "Invalid sort type: $type";
+            return response()->json(['error' => $message], 400);
+        }
+
+        $categorias = Categoria::orderBy($sort, $type)->get();
+        return response()->json(new CategoriaCollection($categorias), 200);
     }
 
-    public function create()
-    {
-        return view('categorias.create');
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50'
-        ]);
+        
+        $validated = $request->validate((new CategoriaRequest)->rules());
 
-        Categoria::create($request->all());
+        $categoria = Categoria::create($validated);
 
-        return response()->json(['success' => true]);
+        return response()->json(['data' => $categoria], 201);
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Categoria $categoria)
     {
-        $categoria = Categoria::findOrFail($id);
-        return view('categorias.edit', compact('categoria'));
+        return response()->json(['data' => $categoria], 200);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Categoria $categoria)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50'
-        ]);
+        $validated = $request->validate((new CategoriaRequest)->rules());
 
-        $categoria = Categoria::findOrFail($id);
-        $categoria->update($request->all());
+        $categoria->update($validated);
 
-        return redirect()->route('categorias.index')->with('success', 'Categoria actualizada con éxito.');
+        return response()->json(['data' => $categoria], 200);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Categoria $categoria)
     {
-        Categoria::destroy($id);
-        return redirect()->route('categorias.index')->with('success', 'Categoria eliminada con éxito.');
+        $categoria->delete();
+
+        return response(null, 204);
     }
 
+    /**
+     * Export the specified resource in the given format.
+     */
     public function export($format)
     {
         $categorias = Categoria::all();
