@@ -25,7 +25,6 @@ public class FacturaController {
     // Crear una nueva factura
     @PostMapping
     public ResponseEntity<Factura> crearFactura(@RequestBody Factura factura) {
-        System.out.println("Total Impuestos: " + factura.getTotalImpuestos());
         Factura facturaCreada = facturaService.crearFactura(factura.getCodigo(), factura.getSubtotal(), factura.getTotalImpuestos(), factura.getTotal(), factura.getEstado(), factura.getCliente(), factura.getMetodoPago());
         return ResponseEntity.status(HttpStatus.CREATED).body(facturaCreada);
     }
@@ -47,7 +46,7 @@ public class FacturaController {
     // Actualizar una factura
     @PutMapping("/{id}")
     public ResponseEntity<Factura> actualizarFactura(@PathVariable Long id, @RequestBody Factura factura) {
-        Factura facturaActualizada = facturaService.actualizarFactura(id, factura.getCodigo(), factura.getSubtotal(), factura.getTotalImpuestos(), factura.getTotal(), factura.getEstado(), factura.getCliente(), factura.getMetodoPago());
+        Factura facturaActualizada = facturaService.actualizarFactura(id, factura.getCodigo(), factura.getFecha(), factura.getSubtotal(), factura.getTotalImpuestos(), factura.getTotal(), factura.getEstado(), factura.getCliente(), factura.getMetodoPago());
         return ResponseEntity.ok(facturaActualizada);
     }
 

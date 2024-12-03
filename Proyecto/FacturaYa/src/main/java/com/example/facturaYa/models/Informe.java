@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "informes")
@@ -16,7 +16,7 @@ public class Informe {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate fecha;
+    private LocalDateTime fecha;
 
     @Column(nullable = false, length = 1)
     private String tipoInforme;
@@ -26,7 +26,7 @@ public class Informe {
 
     public Informe() {}
 
-    public Informe(LocalDate fecha, String tipoInforme, String datosJson) {
+    public Informe(LocalDateTime fecha, String tipoInforme, String datosJson) {
         this.fecha = fecha;
         this.tipoInforme = tipoInforme;
         this.datosJson = datosJson;
@@ -41,11 +41,11 @@ public class Informe {
         this.id = id;
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 

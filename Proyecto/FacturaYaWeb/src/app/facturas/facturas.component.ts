@@ -23,7 +23,7 @@ export class FacturasComponent implements OnInit {
 
   loadFacturas(): void {
     this.facturasService.getFacturas().subscribe(
-      (data) => {
+      (data) => { 
         this.facturas = data;
       },
       (error) => {
@@ -92,6 +92,8 @@ export class FacturasComponent implements OnInit {
 
   selectFactura(factura: any): void {
     this.selectedFactura = { ...factura };
+    const [date, time] = this.selectedFactura.fecha.split('T');
+    this.selectedFactura.fecha = date;
   }
 
   viewFactura(factura: any): void {

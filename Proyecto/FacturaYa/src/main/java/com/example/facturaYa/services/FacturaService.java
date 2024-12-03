@@ -5,6 +5,7 @@ import com.example.facturaYa.models.Factura;
 import com.example.facturaYa.models.MetodoPago;
 import com.example.facturaYa.repositories.FacturaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,8 @@ public class FacturaService implements IFacturaService {
     @Override
     @Transactional
     public Factura crearFactura(String codigo, BigDecimal subtotal, BigDecimal totalImpuestos, BigDecimal total, Boolean estado, Cliente cliente, MetodoPago metodoPago) {
-        Factura factura = new Factura(codigo, subtotal, totalImpuestos, total, estado, cliente, metodoPago);
+        LocalDateTime fecha = LocalDateTime.now();
+        Factura factura = new Factura(codigo, fecha, subtotal, totalImpuestos, total, estado, cliente, metodoPago);
         return facturaRepository.save(factura);
     }
 
@@ -44,9 +46,10 @@ public class FacturaService implements IFacturaService {
     // Actualizar factura
     @Override
     @Transactional
-    public Factura actualizarFactura(Long id, String nuevoCodigo, BigDecimal nuevoSubtotal, BigDecimal nuevoTotalImpuestos, BigDecimal nuevoTotal, Boolean nuevoEstado, Cliente nuevoCliente, MetodoPago nuevoMetodoPago) {
+    public Factura actualizarFactura(Long id, String nuevoCodigo, LocalDateTime nuevaFecha, BigDecimal nuevoSubtotal, BigDecimal nuevoTotalImpuestos, BigDecimal nuevoTotal, Boolean nuevoEstado, Cliente nuevoCliente, MetodoPago nuevoMetodoPago) {
         Factura factura = obtenerFactura(id);
         factura.setCodigo(nuevoCodigo);
+        factura.setFecha(nuevaFecha);
         factura.setSubtotal(nuevoSubtotal);
         factura.setTotalImpuestos(nuevoTotalImpuestos);
         factura.setTotal(nuevoTotal);

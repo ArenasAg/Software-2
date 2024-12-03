@@ -5,7 +5,7 @@ import com.example.facturaYa.repositories.InventarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -21,7 +21,7 @@ public class InventarioService implements IInventarioService {
 
     @Override
     @Transactional
-    public Inventario crearInventario(LocalDate fecha, String tipoMovimiento) {
+    public Inventario crearInventario(LocalDateTime fecha, String tipoMovimiento) {
         Inventario inventario = new Inventario(fecha, tipoMovimiento);
         return inventarioRepository.save(inventario);
     }
@@ -38,7 +38,7 @@ public class InventarioService implements IInventarioService {
 
     @Override
     @Transactional
-    public Inventario actualizarInventario(Long id, LocalDate nuevaFecha, String nuevoTipoMovimiento) {
+    public Inventario actualizarInventario(Long id, LocalDateTime nuevaFecha, String nuevoTipoMovimiento) {
         Inventario inventario = obtenerInventario(id);
         inventario.setFecha(nuevaFecha);
         inventario.setTipoMovimiento(nuevoTipoMovimiento);

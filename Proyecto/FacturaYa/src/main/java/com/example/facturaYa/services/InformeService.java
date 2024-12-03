@@ -5,7 +5,7 @@ import com.example.facturaYa.repositories.InformeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,7 +20,7 @@ public class InformeService implements IInformeService {
 
     @Override
     @Transactional
-    public Informe crearInforme(LocalDate fecha, String tipoInforme, String datosJson) {
+    public Informe crearInforme(LocalDateTime fecha, String tipoInforme, String datosJson) {
         Informe informe = new Informe(fecha, tipoInforme, datosJson);
         return informeRepository.save(informe);
     }
@@ -37,7 +37,7 @@ public class InformeService implements IInformeService {
 
     @Override
     @Transactional
-    public Informe actualizarInforme(Long id, LocalDate nuevaFecha, String nuevoTipoInforme, String nuevosDatosJson) {
+    public Informe actualizarInforme(Long id, LocalDateTime nuevaFecha, String nuevoTipoInforme, String nuevosDatosJson) {
         Informe informe = obtenerInforme(id);
         informe.setFecha(nuevaFecha);
         informe.setTipoInforme(nuevoTipoInforme);

@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "facturas")
@@ -19,6 +20,9 @@ public class Factura {
 
     @Column(nullable = false)
     private String codigo;
+
+    @Column(nullable = false)
+    private LocalDateTime fecha;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
@@ -42,8 +46,9 @@ public class Factura {
 
     public Factura() {}
 
-    public Factura(String codigo, BigDecimal subtotal, BigDecimal totalImpuestos, BigDecimal total, Boolean estado, Cliente cliente, MetodoPago metodoPago) {
+    public Factura(String codigo, LocalDateTime fecha, BigDecimal subtotal, BigDecimal totalImpuestos, BigDecimal total, Boolean estado, Cliente cliente, MetodoPago metodoPago) {
         this.codigo = codigo;
+        this.fecha = fecha;
         this.subtotal = subtotal;
         this.totalImpuestos = totalImpuestos;
         this.total = total;
@@ -67,6 +72,14 @@ public class Factura {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
     }
 
     public BigDecimal getSubtotal() {

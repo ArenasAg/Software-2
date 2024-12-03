@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "inventarios")
@@ -16,14 +16,14 @@ public class Inventario {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate fecha;
+    private LocalDateTime fecha;
 
     @Column(nullable = false)
     private String tipoMovimiento;
 
     public Inventario() {}
 
-    public Inventario(LocalDate fecha, String tipoMovimiento) {
+    public Inventario(LocalDateTime fecha, String tipoMovimiento) {
         this.fecha = fecha;
         this.tipoMovimiento = tipoMovimiento;
     }
@@ -37,11 +37,11 @@ public class Inventario {
         this.id = id;
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 

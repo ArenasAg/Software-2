@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS facturaya;
+
 CREATE DATABASE facturaya;
 USE facturaya;
 
@@ -62,6 +64,7 @@ INSERT INTO metodo_pagos (nombre, identificador) VALUES
 CREATE TABLE facturas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(255) NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     subtotal DECIMAL(10, 2) NOT NULL,
     total_impuestos DECIMAL(10, 2) NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
@@ -72,9 +75,9 @@ CREATE TABLE facturas (
     FOREIGN KEY (metodo_pago_id) REFERENCES metodo_pagos(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-INSERT INTO facturas (codigo, subtotal, total_impuestos, total, estado, cliente_id, metodo_pago_id) VALUES
-('F001', 100.00, 16.00, 116.00, TRUE, 1, 1),
-('F002', 50.00, 8.00, 58.00, TRUE, 2, 2);
+INSERT INTO facturas (codigo, fecha, subtotal, total_impuestos, total, estado, cliente_id, metodo_pago_id) VALUES
+('F001', '2024-11-11 10:00:00', 100.00, 16.00, 116.00, TRUE, 1, 1),
+('F002', '2024-11-12 11:00:00', 50.00, 8.00, 58.00, TRUE, 2, 2);
 
 CREATE TABLE detalle_facturas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
